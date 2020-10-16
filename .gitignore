@@ -1,0 +1,9 @@
+/auto/
+*.aux
+/notas.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pyg
+/notas.synctex.gz
+*.toc
