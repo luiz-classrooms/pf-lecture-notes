@@ -17,15 +17,8 @@
 \usepackage{color}   %May be necessary if you want to color links
 \usepackage{xcolor}
 
-\definecolor{platinum}{rgb}{0.9, 0.89, 0.89}
-
-\usepackage{listings}
-\lstset{
-	basicstyle=\tt\footnotesize,
-	backgroundcolor=\color{platinum}
-	%keywordstyle=\color{blue},
-	%stringstyle=\color{red}
-}	
+\usepackage{minted}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
@@ -87,11 +80,11 @@ seja a 8.4.4.
 Você pode conferir a versão instalada com o comando \texttt{ghci} (falaremos mais a respeito dele no futuro), que deve
 produzir uma saída como esta.
 
-\begin{lstlisting}[language=bash, frame=single]
+\begin{minted}[bgcolor=bg]{bash}
 $ ghci
 GHCi, version 8.6.3: http://www.haskell.org/ghc/
 Prelude> 
-\end{lstlisting}
+\end{minted}
 
 Existem diversas formas de se obter o GHC.
 Você pode tentar instalá-lo pelo gerenciador de pacotes da sua distribuição, ou tentar baixá-lo pelo site oficial.
@@ -127,8 +120,8 @@ Uma lista é uma estrutura que pode ou ser \emph{vazia} ou ter uma \emph{cabeça
 Vamos criar um arquivo \texttt{List.hs} com o seguinte conteúdo inicial.
 Este indica que iremos trabalhar com algumas definições de Prelude, bem como iremos fazer uso de conceitos definidos em outros módulos.
 
-\begin{lstlisting}[language=haskell, frame=single]
-module List where
+\begin{minted}[bgcolor=bg]{haskell}
+module List where tonton
 
 import Prelude (
 	Eq, Num, Int, Char, Bool(True, False),
@@ -141,16 +134,16 @@ import Control.Applicative (Alternative(empty, (<|>)))
 import Bool
 import Functions
 import Maybe 
-\end{lstlisting}
+\end{minted}
 
 Iniciamos nossas implementações com uma operação muito básica: determinar o comprimento de uma lista.
 Dada sua natureza recursiva, podemos aproveitar a estrutura de uma lista para calcular recursivamente seu comprimento.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 length :: [a] -> Int
 length [] = 0
 length (x:xs) = 1 + length xs
-\end{lstlisting}
+\end{minted}
 
 Vamos entender o código acima por partes.
 A primeira linha determina a assinatura da função \texttt{length}, que recebe uma lista de elementos do tipo \texttt{a} (pode ser um tipo qualquer), e retorna um elemento do tipo \texttt{Int}, isto é, um inteiro.
@@ -167,7 +160,7 @@ Vamos para o diretório onde está \texttt{List.hs} e executamos o seguinte.
 
 \pagebreak
 
-\begin{lstlisting}[language=bash, frame=single]
+\begin{minted}[bgcolor=bg]{bash}
 $ ghci                                                                      
 GHCi, version 8.6.3: http://www.haskell.org/ghc/                                        
 Prelude> :l List                                                                                   
@@ -177,7 +170,7 @@ Ok, one module loaded.
 3                                                                                                  
 *List> :q                                                                                          
 Leaving GHCi.               
-\end{lstlisting}
+\end{minted}
 
 Como podemos ver, carregamos o arquivo no interpretador utilizando \texttt{:l List} (note que não precisamos escrever a extensão do arquivo).
 Quando passamos uma lista com três elementos, \texttt{length} responde de acordo.
@@ -186,22 +179,22 @@ Para sair do interpretador, utilizamos \texttt{:q}.
 Agora que entendemos o básico de como utilizar o interpretador, vamos nos concentrar em desenvolver outras funções.
 A função \texttt{null}, por exemplo, determina se uma lista é vazia ou não.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 null :: [a] -> Bool
 null [] = True
 null (x:xs) = False
-\end{lstlisting}
+\end{minted}
 
 Recomendamos carregar \texttt{List.hs} no interpretador e fazer alguns testes.
 Não deve ser difícil entender que \texttt{null} recebe uma lista contendo elementos de um tipo qualquer e retorna um valor booleano (verdadeiro para listas vazias).
 
 Vamos agora criar duas funções para acessar as componentes do tipo lista: cabeça e cauda.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 head :: [a] -> a
 head [] = error "head: empty list"
 head (x:_) = x
-\end{lstlisting}
+\end{minted}
 
 Temos duas coisas novas no trecho de código acima.
 Primeiro, como não podemos retornar a cabeça de uma lista vazia, temos de lançar uma exceção.
@@ -210,33 +203,33 @@ A segunda coisa ocorre na expressão \texttt{(x:\_)}: o \emph{underline} serve p
 Como não precisamos mencionar a cauda da lista para retornar sua cabeça, consideramos boa prática não nomeá-la.
 Agora definimos a função \texttt{tail}, de forma análoga.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 tail :: [a] -> [a]
 tail [] = error "tail: empty list"
 tail (_:xs) = xs
-\end{lstlisting}
+\end{minted}
 
 Podemos entender o par de funções \texttt{head} e \texttt{tail} como duas funções que decompõem uma lista separando seu primeiro elemento.
 Intuitivamente, podemos conceber as funções \texttt{last} e \texttt{init}, que decompõem uma lista separando seu último elemento.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 last :: [a] -> a
 last [] = error "last: empty list"
 last (x:[]) = x
 last (_:xs) = last xs
-\end{lstlisting}
+\end{minted}
 
 Observe que a implementação de \texttt{last} tem três casos, apesar de uma lista ter apenas duas definições: vazia ou com cabeça e cauda.
 É preciso tratar o caso de uma lista ter cabeça e uma cauda vazia (uma lista com apenas um elemento) por conta da definição recursiva.
 Observe que, se não houvesse o referido caso, a definição recursiva sempre levaria ao lançamento de uma exceção.
 Definimos agora \texttt{init}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 init :: [a] -> [a]
 init [] = error "init: empty list"
 init (_:[]) = []
 init (x:xs) = x : init xs
-\end{lstlisting}
+\end{minted}
 
 A ocorrência de três casos em \texttt{init} é justificada da mesma forma que em \texttt{last}.
 Temos algo novo no caso recursivo: além de \texttt{(:)} ser usado para decompor listas, também pode ser usado para a construção de listas.
@@ -245,11 +238,11 @@ Em \texttt{init}, usamos \texttt{(:)} para construir uma lista, a ser retornada,
 Uma operação usual em listas (e outros tipos compostos lineares) é a \emph{concatenação}, que consiste em tomar duas listas e retornar uma lista maior, resultado de justapor a primeira seguida da segunda.
 Vamos implementar essa função como um operador infixo, isto é, como uma função ``binária" (essas aspas serão explicadas posteriormente) que ocorre entre seus argumentos.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 (++) :: [a] -> [a] -> [a]
 [] ++ ys = ys
 (x:xs) ++ ys = x : xs ++ ys
-\end{lstlisting}
+\end{minted}
 
 A primeira coisa que observamos é como o operador \texttt{(++)} é definido na assinatura.
 Quando definimos a assinatura de operadores, colocamos seu nome entre parênteses.
@@ -259,11 +252,11 @@ No último caso, definimos que o primeiro elemento da concatenação de duas lis
 
 Para facilitar o uso de \texttt{(++)} em certos contextos, definimos também a função \texttt{concat}, que recebe uma lista de listas e retorna uma lista simples, resultado da sucessiva concatenação das sublistas recebidas.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 concat :: [[a]] -> [a]
 concat [] = []
 concat (xs:xss) = xs ++ concat xss
-\end{lstlisting}
+\end{minted}
 
 Chamamos a atenção para o estilo de nomenclatura utilizado.
 Listas simples costumam ter nomes com um único `s' no final, enquanto listas de listas são nomeadas com ``ss" ao final.
@@ -271,11 +264,11 @@ Listas simples costumam ter nomes com um único `s' no final, enquanto listas de
 Agora definimos como computar o inverso de uma lista.
 Nossa primeira tentativa poderia ser algo como o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 reverse :: [a] -> [a]
 reverse [] = []
 reverse (x:xs) = reverse xs ++ [x]
-\end{lstlisting}
+\end{minted}
 
 Essa definição, embora correta, não é a mais eficiente.
 Perceba que o operador \texttt{(++)} tem um custo linear em relação ao número de elementos de seu primeiro argumento.
@@ -284,17 +277,17 @@ Como \texttt{(++)} tem custo linear, essa definição de \texttt{reverse} tem cu
 
 Podemos definir \texttt{reverse} com custo linear (percorrendo seu argumento uma única vez) se fizermos uso de uma função auxiliar, da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 reverse :: [a] -> [a]
 reverse xs = f xs [] where
 	f [] acc = acc
 	f (x:xs) acc = f xs (x:acc)
-\end{lstlisting}
+\end{minted}
 
 Vamos dar um tempo com nosso arquivo \texttt{List.hs} e criar um outro, \texttt{Bool.hs}.
 Nosso novo arquivo terá o seguinte conteúdo inicial.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Bool where
 
 import Prelude(Bool(True, False), Applicative(pure))
@@ -302,19 +295,19 @@ import Prelude(Bool(True, False), Applicative(pure))
 import Control.Applicative (Alternative(empty))
 
 import Functions
-\end{lstlisting}
+\end{minted}
 
 Infelizmente não poderemos desenvolver nosso próprio tipo booleano, pois diversas funções em Haskell que são implementadas em baixo nível referenciam o tipo booleano usado pelo compilador.
 Por isso, importamos o tipo \texttt{Bool} e seus valores a partir de \texttt{Prelude}.
 
 Em \texttt{Bool.hs}, vamos desenvolver duas funções bastante similares a operadores lógicos bem conhecidos.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 and :: [Bool] -> Bool
 and [] = True
 and (True:xs) = and xs
 and (False:_) = False
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{and} toma uma lista de valores booleanos e retorna um booleano.
 Se a lista contém apenas valores \texttt{True}, então ela retorna \texttt{True}.
@@ -323,12 +316,12 @@ Perceba que, além de decompor a lista em cabeça e cauda, criamos casos de acor
 Essas decomposições de tipos em partes (lista em cabeça e cauda), bem como a criação de casos de acordo com os possíveis valores de uma certa parte, são chamadas de \emph{pattern matching}.
 A seguir, definimos a função \texttt{or} de forma similar.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 or :: [Bool] -> Bool
 or [] = False
 or (True:_) = True
 or (False:xs) = or xs
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Implemente os operadores \emph{\texttt{(\&\&)}} e \emph{\texttt{(||)}}, ambos com assinatura \emph{\texttt{Bool -> Bool -> Bool}}.
@@ -338,12 +331,12 @@ or (False:xs) = or xs
 Voltando a editar \texttt{List.hs}, criamos duas operações muito usuais em programação funcional, que consistem em tomar ou descartar prefixos de una lista.
 As funções \texttt{take} e \texttt{drop} fazem precisamente isso.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 take :: Int -> [a] -> [a]
 take 0 _ = []
 take _ [] = []
 take n (x:xs) = x : take (n - 1) xs
-\end{lstlisting}
+\end{minted}
 
 Dado um inteiro \texttt{n}, \texttt{take} retorna um prefixo de comprimento \texttt{n} da lista de entrada (caso essa seja vazia, apenas a lista vazia pode ser retornada como prefixo).
 Observe, mais uma vez, o uso de \emph{pattern matching} por valores: o primeiro caso verifica se o inteiro \texttt{n} tem valor 0.
@@ -352,39 +345,39 @@ O último caso diz que, se \texttt{n} não é nulo (esperamos que seja positivo)
 Antes de escrever a função \texttt{drop}, vamos criar um condicional, o que nos permitirá um outro estilo de escrita.
 A função \texttt{cond} é bem simples de entender, e ficará escrita em \texttt{Bool.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 cond :: Bool -> a -> a -> a
 cond True x _ = x
 cond False _ y = y
-\end{lstlisting}
+\end{minted}
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 drop :: Int -> [a] -> [a]
 drop _ [] = []
 drop n xs = cond (n <= 0) xs (drop (n - 1) (tail xs))
-\end{lstlisting}
+\end{minted}
 
 Note que, nesse estilo de escrita, não usamos \emph{pattern matching} para determinar a nulidade de \texttt{n}, nem para atribuir nomes às partes de uma lista não vazia.
 Usamos \texttt{cond} para tratar os valores de \texttt{n} (perceba que isso lida inclusive com o caso de \texttt{n} ter valor negativo) e \texttt{tail} para acessar a cauda da lista de entrada (graças ao primeiro caso, sabemos que \texttt{tail} nunca receberá uma lista vazia).
 
 A função \texttt{splitAt} combina os resultados de \texttt{take} e \texttt{drop}. Para isso, ela faz uso de uma \emph{tupla}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 splitAt :: Int -> [a] -> ([a], [a])
 splitAt n xs = (take n xs, drop n xs)
-\end{lstlisting}
+\end{minted}
 
 Mais uma vez, essa definição simples não é a mais eficiente.
 Como é percebido, chamar \texttt{take} e \texttt{drop} com os mesmos argumentos implica em ``passear" pelas mesmas posições da lista duas vezes.
 Implementando \texttt{splitAt} independentemente de \texttt{take} e \texttt{drop}, conseguimos resolver esse problema.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 splitAt :: Int -> [a] -> ([a], [a])
 splitAt 0 xs = ([], xs)
 splitAt _ [] = ([], [])
 splitAt n (x:xs) = (x:ps, qs) where
 	(ps, qs) = splitAt (n - 1) xs
-\end{lstlisting}
+\end{minted}
 
 Dessa vez, fizemos uso de \texttt{where} para receber o resultado da chamada recursiva, que é um par.
 Assim, podemos usar esse resultado para construir o retorno de \texttt{splitAt} de forma adequada.
@@ -392,12 +385,12 @@ Assim, podemos usar esse resultado para construir o retorno de \texttt{splitAt} 
 Vamos criar nossa primeira função que exigirá uma restrição em sua assinatura.
 A função \texttt{isPrefixOf} recebe duas listas, e determina se a primeira é prefixo da segunda.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 isPrefixOf :: Eq a => [a] -> [a] -> Bool
 isPrefixOf [] _ = True
 isPrefixOf _ [] = False
 isPrefixOf (x:xs) (y:ys) = cond (x == y) (isPrefixOf xs ys) False
-\end{lstlisting}
+\end{minted}
 
 Dessa vez, a função não recebe listas contendo um tipo qualquer.
 O tipo dos elementos das listas deve implementar as funções da classe \texttt{Eq}.
@@ -418,12 +411,12 @@ Por vezes, queremos percorrer duas listas simultaneamente.
 Uma forma de fazer isso é transformar as duas listas numa lista de pares, onde as primeiras e segundas posições vêm, respectivamente, da primeira e da segunda lista.
 A função \texttt{zip} faz justamente isso.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 zip :: [a] -> [b] -> [(a, b)]
 zip [] _ = []
 zip _ [] = []
 zip (x:xs) (y:ys) = (x, y) : zip xs ys
-\end{lstlisting}
+\end{minted}
 
 Vamos apresentar agora as primeiras funções que tomam funções como argumento.
 Por ser uma linguagem funcional, o sistema de tipos de Haskell é bastante robusto.
@@ -442,11 +435,11 @@ Dessa forma, uma função é determinada pelo primeiro \texttt{->} de sua assina
 Para receber uma função como argumento, escrevemos sua assinatura entre parênteses.
 Temos, por exemplo, a função \texttt{takeWhile}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 takeWhile :: (a -> Bool) -> [a] -> [a]
 takeWhile _ [] = []
 takeWhile p (x:xs) = cond (p x) (x : takeWhile p xs) []
-\end{lstlisting}
+\end{minted}
 
 Note que \texttt{p} é um argumento do tipo \texttt{a -> Bool}.
 Dizemos que \texttt{p} é um \emph{predicado}, isto é, uma função que recebe um valor de um certo tipo e retorna um valor booleano.
@@ -455,21 +448,21 @@ Por exemplo, tomando a assinatura \mbox{\texttt{(<=) :: Ord a => a -> a -> Bool}
 A função \texttt{takeWhile} toma um predicado e retorna uma função, que por sua vez toma uma lista e retorna seu maior prefixo cujos elementos satisfazem \texttt{p}.
 Seu par é a função \texttt{dropWhile}, que descarta o maior prefixo cujos elementos satisfazem um certo predicado.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 dropWhile :: (a -> Bool) -> [a] -> [a]
 dropWhile _ [] = []
 dropWhile p xs = cond (p (head xs)) (dropWhile p (tail xs)) xs
-\end{lstlisting}
+\end{minted}
 
 Para esse contexto, o análogo da função \texttt{splitAt} se chama \texttt{span}.
 A função \texttt{span} combina os resultados de \texttt{takeWhile} e \texttt{dropWhile}, e já devemos ter uma ideia de como implementá-la de forma eficiente.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 span :: (a -> Bool) -> [a] -> ([a], [a])
 span _ [] = ([], [])
 span p l@(x:xs) = cond (p x) (x:ps, qs) ([], l) where
 	(ps, qs) = span p xs
-\end{lstlisting}
+\end{minted}
 
 Na definição de \texttt{span}, temos mais uma novidade sintática.
 Usamos \texttt{@} quando queremos nomear tanto um valor de um tipo composto quanto suas partes.
@@ -489,22 +482,22 @@ Por mais que tivessem a cauda compartilhada, ainda assim haveria algum desperdí
 
 Vamos criar um novo arquivo, \texttt{Functions.hs}, que terá o seguinte conteúdo inicial.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Functions where
 
 import Prelude (Applicative(pure, (*>)), Monad((>>=)), seq)
-\end{lstlisting}
+\end{minted}
 
 Nele, definimos algo crucial para a expressividade e reuso em programação funcional: a composição de funções.
 Em Haskell, como era de se esperar, a composição de funções também é uma função.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 comp :: (b -> c) -> (a -> b) -> a -> c
 comp f g x = f (g x)
 
 (.) :: (b -> c) -> (a -> b) -> a -> c
 f . g = comp f g
-\end{lstlisting}
+\end{minted}
 
 Definimos \texttt{comp} para determinar a composição como uma função.
 Em seguida, definimos a composição como o operador \texttt{(.)}, que toma duas funções e retorna uma função (o resultado de passar \texttt{g} para a função retornada por \texttt{comp f}).
@@ -517,29 +510,29 @@ Em seguida, definimos a composição como o operador \texttt{(.)}, que toma duas
 Uma função bastante comum de ser composta com predicados é a função \texttt{not}.
 Sua descrição não exige explicações, e é escrita em \texttt{Bool.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 not :: Bool -> Bool
 not True = False
 not False = True
-\end{lstlisting}
+\end{minted}
 
 Voltando a editar \texttt{List.hs}, podemos agora definir a função \texttt{break}, cujo comportamento se assemelha ao de \texttt{span}.
 No entanto, \texttt{break} nega o predicado antes de particionar a lista recebida.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 break :: (a -> Bool) -> [a] -> ([a], [a])
 break p xs = span (not . p) xs
-\end{lstlisting}
+\end{minted}
 
 Além de trabalhar apenas tomando prefixos de listas, é perfeitamente plausível que haja uma função que filtre uma lista com base em um predicado.
 Essa função costuma ser chamada de \texttt{filter}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 filter :: (a -> Bool) -> [a] -> [a]
 filter p [] = []
 filter p (x:xs) = cond (p x) (x:xs') xs' where
 	xs' = filter p xs
-\end{lstlisting}
+\end{minted}
 
 Apesar de todas as funções em Haskell serem unárias, conseguimos ``simular" funções com mais argumentos retornando outras funções unárias para receber os argumentos restantes.
 Essa, no entanto, não é a única forma de fazer isso.
@@ -552,10 +545,10 @@ No entanto, algumas situações podem tornar desejável que certas funções nã
 Nesse sentido, definimos a função \texttt{uncurry}, que recebe uma \emph{curried function} ``binária" e retorna a \emph{uncurried function} equivalente.
 Ela deve ser escrita em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 uncurry :: (a -> b -> c) -> (a, b) -> c
 uncurry f (x, y) = f x y
-\end{lstlisting}
+\end{minted}
 
 Ironicamente, a função \texttt{uncurry} deve ser aplicada parcialmente para que retorne a \emph{uncurried function} correspondente ao seu argumento.
 Assim, \texttt{uncurry (+)} seria equivalente a \texttt{(+)}, mas não permitiria aplicações parciais (como \texttt{(1+)}).
@@ -570,11 +563,11 @@ Em Haskell, as diversas formas de se tratar o conteúdo de uma lista devem ser s
 A função \texttt{map} transforma o conteúdo de uma lista de acordo com uma função.
 Ela pode ser implementada como segue, e sua definição será escrita em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 map :: (a -> b) -> [a] -> [b]
 map f [] = []
 map f (x:xs) = f x : map f xs
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Implemente a função \emph{\texttt{inits :: [a] -> [[a]]}}, que retorna todos os prefixos da lista dada como entrada.
@@ -588,20 +581,20 @@ Caso \texttt{f} tivesse mais argumentos, a função \texttt{map} não serviria.
 A função \texttt{zipWith} segue a mesma lógica de \texttt{map}, mas é usada para funções com ``dois" argumentos.
 Também será escrita em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 zipWith f [] _ = []
 zipWith f _ [] = []
 zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
-\end{lstlisting}
+\end{minted}
 
 Podemos inclusive utilizar \texttt{zipWith} para implementar \texttt{zip} como uma aplicação parcial usando \texttt{(,) :: a -> b -> (a, b)}.
 Voltamos ao nosso arquivo \texttt{List.hs} e reescrevemos \texttt{zip} como segue.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 zip :: [a] -> [b] -> [(a, b)]
 zip = zipWith (,)
-\end{lstlisting}
+\end{minted}
 
 Até agora, nossas funções tomam listas como argumentos e retornam listas, sejam estas sublistas ou transformações da lista de entrada.
 Por vezes, é desejável fazer uma computação que envolva todos os elementos da lista.
@@ -612,11 +605,11 @@ Podemos começar a ``dobrar" os elementos de uma lista a partir de qualquer uma 
 A função \texttt{foldl} começa pela esquerda, emquamto \texttt{foldr} começa pela direita.
 Manteremos a definição de ambas em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 foldl :: (b -> a -> b) -> b -> [a] -> b
 foldl f acc [] = acc
 foldl f acc (x:xs) = foldl f (f acc x) xs
-\end{lstlisting}
+\end{minted}
 
 Vamos explicar o que \texttt{foldl} está fazendo.
 No caso base, não há elementos da lista para ``dobrar" e \texttt{foldl} retorna o acumulador, o argumento responsável por guardar o resultado das ``dobras" já feitas.
@@ -625,11 +618,11 @@ No segundo caso, a lista não está vazia, e \texttt{foldl} ``dobra" a cabeça d
 Uma coisa importante de se notar é que a definição recursiva de \texttt{foldl} é apenas uma chamada de \texttt{foldl}.
 Funções com essa propriedade são ditas \emph{recursivas por cauda}, e são eficientes no uso de memória, devido a otimizações que os compiladores modernos são capazes de fazer. Agora definimos \texttt{foldr}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 foldr :: (a -> b -> b) -> b -> [a] -> b
 foldr f acc [] = acc
 foldr f acc (x:xs) = f x (foldr f acc xs)
-\end{lstlisting}
+\end{minted}
 
 Não deve ser difícil perceber que a definição de \texttt{foldr} retorna um valor de um tipo como é proposto na assinatura.
 O mais intrigante é entender como \texttt{foldl} e \texttt{foldr} ``dobram" os elementos na ordem que cada uma propõe.
@@ -639,23 +632,23 @@ Já em \texttt{foldr}, a definição recursiva tem seu resultado dado por uma ch
 
 Como exemplos do uso de \texttt{foldl}, podemos descrever as seguintes funções em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 sum :: Num a => [a] -> a
 sum = foldl (+) 0 
-\end{lstlisting}
+\end{minted}
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 prod :: Num a => [a] -> a
 prod = foldl (*) 1 
-\end{lstlisting}
+\end{minted}
 
 Para ilustrar o uso de \texttt{foldr}, podemos reescrever \texttt{filter} da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 filter :: (a -> Bool) -> [a] -> [a]
 filter p xs = foldr f [] xs where
 	f x ys = cond (p x) (x:ys) ys
-\end{lstlisting}
+\end{minted}
 
 Note como a definição de \texttt{f} se assemelha à definição anterior de \texttt{filter}.
 Perceba que, pela definição de \texttt{foldr}, \texttt{ys} pode ser vista como a cauda já filtrada de acordo com \texttt{p}.
@@ -666,11 +659,11 @@ Aparentemente falha por conta das características de Haskell, \texttt{foldr} fa
 Isso é notável quanto ao retorno de listas: \texttt{foldl}, por ser recursiva por cauda, precisa computar a lista inteira antes de poder retornar seu primeiro elemento, enquanto \texttt{foldr} disponibiliza os elementos tão logo estejam computados.
 O impacto disso fica evidente com o auxílio desta definição de \texttt{takeWhile}, que deixaremos escrita em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 takeWhile :: (a -> Bool) -> [a] -> [a]
 takeWhile p xs = foldr f [] xs where
 	f x ys = cond (p x) (x:ys) []
-\end{lstlisting}
+\end{minted}
 
 Perceba que há uma única diferença dessa definição de \texttt{takeWhile} para a definição de \texttt{filter}.
 Suponha que apenas os três primeiros elementos de uma lista satisfaçam um certo predicado.
@@ -695,7 +688,7 @@ Vamos criar um tipo justamente com o propósito de representar uma computação 
 
 Criamos o arquivo \texttt{Maybe.hs} com o conteúdo inicial a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Maybe where
 
 import Prelude (Bool(True, False),
@@ -707,7 +700,7 @@ import Bool
 import Functions
 
 data Maybe a = Nothing | Just a
-\end{lstlisting}
+\end{minted}
 
 Aqui, temos o primeiro uso de \texttt{data}, que serve para a definição de um tipo.
 Criamos o tipo \texttt{Maybe} que, dado um tipo \texttt{a} como argumento, representa um conjunto de valores em dois casos: \texttt{Maybe a} pode estar vazio (\texttt{Nothing}) ou pode conter um único valor do tipo \texttt{a} (\texttt{Just a}).
@@ -715,7 +708,7 @@ A possibilidade de \texttt{Maybe a} conter nenhum valor do tipo \texttt{a} nos p
 
 Como exemplo de seu uso, podemos importar o módulo \texttt{Maybe} em \texttt{List.hs} e definir versões bem comportadas de \texttt{head} e \texttt{tail}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
 safeHead (x:_) = Just x
@@ -723,7 +716,7 @@ safeHead (x:_) = Just x
 safeTail :: [a] -> Maybe [a]
 safeTail [] = Nothing
 safeTail (_:xs) = Just xs
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Implemente a função \emph{\texttt{uncons :: [a] -> Maybe (a, [a])}} que, dada uma lista, retorna uma tupla composta, respectivamente, por sua cabeça e sua cauda.
@@ -737,22 +730,22 @@ Como a validação dos tipos de um programa é feita em tempo de compilação, o
 Vamos agora desenvolver um aparato para facilitar o tratamento de valores do tipo \texttt{Maybe a}.
 Os seguintes predicados são úteis para facilitar futuras definições.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 isNothing :: Maybe a -> Bool
 isNothing Nothing = True
 isNothing _ = False
 
 isJust :: Maybe a -> Bool
 isJust = not . isNothing
-\end{lstlisting}
+\end{minted}
 
 Agora definimos a função \texttt{maybe}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 maybe :: b -> (a -> b) -> Maybe a -> b
 maybe y f Nothing = y
 maybe _ f (Just x) = f x
-\end{lstlisting}
+\end{minted}
 
 Pela assinatura de \texttt{maybe}, podemos entender seu objetivo.
 A função \texttt{maybe} recebe um valor do tipo \texttt{b} e uma função \texttt{f}, além de um valor do tipo \texttt{Maybe a}.
@@ -761,28 +754,28 @@ Com a ajuda de \texttt{y}, \texttt{maybe} consegue tratar uma possível falha em
 Perceba ainda que \texttt{maybe} é feita para ser aplicada parcialmente.
 Uma vez aplicados \texttt{y} e \texttt{f}, \texttt{maybe} retorna uma versão de \texttt{f} que tolera falhas em seu argumento.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fromMaybe :: a -> Maybe a -> a
 fromMaybe y Nothing = y
 fromMaybe _ (Just x) = x
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{fromMaybe} também serve para definir um valor padrão em caso de falha, mas de forma mais simples.
 Por não receber uma função, é útil para definir valores padrão quando um valor do tipo \texttt{Maybe a} deveria ser usado em uma expressão.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 catMaybes :: [Maybe a] -> [a]
 catMaybes [] = []
 catMaybes (Nothing:xs) = catMaybes xs
 catMaybes ((Just x):xs) = x : catMaybes xs
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{catMaybes} remove os valores \texttt{Nothing} de uma lista de elementos do tipo \texttt{Maybe a}, enquanto também extrai os valores agregados aos \texttt{Just}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 mapMaybe :: (a -> Maybe b) -> [a] -> [b]
 mapMaybe f = catMaybes . map f
-\end{lstlisting}
+\end{minted}
 
 Por fim, a função \texttt{mapMaybe} transforma uma lista de elementos do tipo \texttt{a} usando uma função que pode falhar, e em seguida remove as transformações que falharam.
 Repare como a divisão entre esses dois passos é evidenciada com \texttt{(.)}, e mais uma vez, a composição de funções promove o reuso de código.
@@ -792,7 +785,7 @@ Repare como a divisão entre esses dois passos é evidenciada com \texttt{(.)}, 
 Nesta subseção, implementamos o tipo \texttt{Either a b}, cujos valores representam uma disjunção entre valores dos tipos \texttt{a} e \texttt{b}.
 Escrevemos suas definições em \texttt{Either.hs}, que tem o seguinte conteúdo inicial.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Either where
 
 import Prelude (Bool(True, False))
@@ -801,7 +794,7 @@ import Bool
 import Functions
 
 data Either a b = Left a | Right b
-\end{lstlisting}
+\end{minted}
 
 Por vezes, percebe-se o uso de \texttt{Either} apenas como um \texttt{Maybe} ``informativo'', já que \mbox{\texttt{Either [Char] b}} pode representar um erro com \texttt{Left [Char]}, permitindo uma string que o descreva.
 Esse, no entanto, é um uso muito limitado de \texttt{Either}, que facilita a descrição de alguns algoritmos.
@@ -809,17 +802,17 @@ Esse, no entanto, é um uso muito limitado de \texttt{Either}, que facilita a de
 Desenvolvemos facilidades para a manipulação de \texttt{Either}.
 As funções que seguem são escritas também em \texttt{Either.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 either :: (a -> c) -> (b -> c) -> Either a b -> c
 either f _ (Left x) = f x
 either _ g (Right y) = g y
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{either} toma duas funções para ``resolver'' a disjunção provocada por \texttt{Either}.
 É irresistível traçar uma analogia com construções como \emph{switch} e \emph{case}, típicas de linguagens procedurais.
 No entanto, o \emph{switching} não ocorre entre valores de um certo tipo, mas sim entre dois tipos.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 lefts :: [Either a b] -> [a]
 lefts [] = []
 lefts (Left x : xs) = x : lefts xs
@@ -829,26 +822,26 @@ rights :: [Either a b] -> [b]
 rights [] = []
 rights (Left _ : xs) = rights xs
 rights (Right x : xs) = x : rights xs
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{lefts} (\texttt{rights}) filtra os elementos de tipo \texttt{a} (\texttt{b}) e os retorna em uma lista.
 Usa-se \emph{pattern matching} para isso, e as definições são imediatas.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 isLeft :: Either a b -> Bool
 isLeft (Left _) = True
 isLeft _ = False
 
 isRight :: Either a b -> Bool
 isRight = not . isLeft
-\end{lstlisting}
+\end{minted}
 
 As definições de \texttt{isLeft} e \texttt{isRight} são elementares.
 Partimos para as próximas definições.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fromLeft :: a -> Either a b -> a
 fromLeft _ (Left x) = x
 fromLeft x (Right _) = x
@@ -856,7 +849,7 @@ fromLeft x (Right _) = x
 fromRight :: b -> Either a b -> b
 fromRight x (Left _) = x
 fromRight _ (Right x) = x
-\end{lstlisting}
+\end{minted}
 
 As funções \texttt{fromLeft} e \texttt{fromRight} retornam valores padrão caso não recebam o caso correspondente, do contrário retornam o valor nele contido.
 
@@ -879,7 +872,7 @@ Vamos criar um arquivo \texttt{BSTree.hs}, que conterá as definições necessá
 Apesar de não terem acesso em tempo constante a seus elementos, mas apenas em tempo logarítmico (quando balanceadas), elas proporcionam um tempo de acesso muito superior ao das listas.
 É verdade que esse tempo de acesso ainda não é tão bom quanto o de um \emph{array}, mas é eficiente o bastante (e o obtemos sem nos incomodar com detalhes da arquitetura).
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module BSTree where
 
 import Prelude (Ord, Ordering(LT, EQ, GT), compare,
@@ -894,7 +887,7 @@ import Maybe
 
 data BSTree k v = Empty
                 | Branch (k, v) (BSTree k v) (BSTree k v)
-\end{lstlisting}
+\end{minted}
 
 Isso define uma árvore binária de busca, com chaves do tipo \texttt{k} e valores do tipo \texttt{v}.
 Temos dois casos para nossa árvore: ela pode ser vazia (\texttt{Empty}) ou pode ser ramificada (\texttt{Branch}), contendo um par de chave e valor (\texttt{(k, v)}) e duas sub-árvores, sendo assim definida recursivamente.
@@ -909,16 +902,16 @@ O tipo \texttt{Maybe a} também ilustra o uso de um parâmetro para a definiçã
 Vamos escrever uma função que retorna uma árvore vazia.
 Faremos com que este seja o único modo de criar uma \texttt{BSTree} fora desse módulo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 empty :: BSTree k v
 empty = Empty
-\end{lstlisting}
+\end{minted}
 
 É apenas isso.
 Basta retornar o valor do primeiro caso.
 Agora, definimos como deve ocorrer uma inserção em nossa árvore.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 insert :: Ord k => BSTree k v -> (k, v) -> BSTree k v
 insert Empty (key', val') = Branch (key', val') empty empty
 insert bst@(Branch (key, val) ltree rtree) (key', val') =
@@ -928,7 +921,7 @@ insert bst@(Branch (key, val) ltree rtree) (key', val') =
 		decide GT = Branch (key, val) ltree rtree'
 		ltree' = insert ltree (key', val')
 		rtree' = insert rtree (key', val')
-\end{lstlisting}
+\end{minted}
 
 No seu primeiro caso, \texttt{insert} transforma uma árvore vazia em uma árvore ramificada com as duas sub-árvores vazias.
 No segundo caso, é preciso tratar a inserção de forma a preservar as invariantes de uma árvore binária de busca: não pode haver chaves duplicadas e todas as chaves contidas na sub-árvore esquerda (direita) devem ser menores (maiores) que a chave presente na raiz.
@@ -953,7 +946,7 @@ A função \texttt{lookup} toma uma árvore e uma chave, e verifica se a árvore
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 lookup :: Ord k => BSTree k v -> k -> Maybe v
 lookup Empty _ = Nothing
 lookup (Branch (key, val) ltree rtree) key' =
@@ -961,21 +954,21 @@ lookup (Branch (key, val) ltree rtree) key' =
 		decide LT = lookup ltree key'
 		decide EQ = Just val
 		decide GT = lookup rtree key'
-\end{lstlisting}
+\end{minted}
 
 Como não há garantias de que a árvore contém a chave, e portanto um valor associado a ela, \texttt{lookup} deve retornar \texttt{Maybe v}.
 A lógica de busca também baseia-se nas invariantes de uma árvore binária de busca, o que torna a estrutura dessa definição similar à da definição de \texttt{insert}.
 Podemos definir rapidamente uma função que verifica se uma árvore contém uma certa chave.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 contains :: Ord k => BSTree k v -> k -> Bool
 contains bst = isJust . lookup bst
-\end{lstlisting}
+\end{minted}
 
 Além de inserir valores associados a chaves em nossa árvore, é interessante que possamos atualizar o valor de uma chave.
 Isso nos permitiria utilizar mais facilmente a \texttt{BSTree} em certas situações.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 update :: Ord k => BSTree k v -> k -> (v -> v) -> BSTree k v
 update Empty _ _ = empty
 update (Branch (key, val) ltree rtree) key' f =
@@ -985,11 +978,11 @@ update (Branch (key, val) ltree rtree) key' f =
 		decide GT = Branch (key, val) ltree rtree'
 		ltree' = update ltree key' f
 		rtree' = update rtree key' f
-\end{lstlisting}
+\end{minted}
 
 Vamos escrever funções para determinar as chaves máximas e mínimas de uma árvore, junto com seu valor.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 maxKey :: BSTree k v -> Maybe (k, v)
 maxKey Empty = Nothing
 maxKey (Branch keyval _ Empty) = Just keyval
@@ -999,7 +992,7 @@ minKey :: BSTree k v -> Maybe (k, v)
 minKey Empty = Nothing
 minKey (Branch keyval Empty _) = Just keyval
 minKey (Branch _ ltree _) = minKey ltree
-\end{lstlisting}
+\end{minted}
 
 Note como não precisamos restringir \texttt{k} a ser instância da classe \texttt{Ord} nessas duas funções.
 Isso é possível porque não fazemos comparações.
@@ -1010,7 +1003,7 @@ Vamos agora definir como é feita a remoção de uma chave da \texttt{BSTree}.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 remove :: Ord k => BSTree k v -> k -> BSTree k v
 remove Empty _ = empty
 remove bst@(Branch (key, val) ltree rtree) key' =
@@ -1027,7 +1020,7 @@ remove bst@(Branch (key, val) ltree rtree) key' =
 			Branch (keyMinR, valMinR) lt rt' where
 				Just (keyMinR, valMinR) = minKey rt
 				rt' = remove rt keyMinR
-\end{lstlisting}
+\end{minted}
 
 Essa função não é tão complexa quanto parece.
 Basicamente, \texttt{remove} busca pela chave a ser removida e, se ela é encontrada, a sub-árvore da qual ela é raiz é passada para a função \texttt{removeRoot}.
@@ -1045,14 +1038,14 @@ Temos a liberdade de admitir que seu retorno será um \texttt{Just (k, v)} pelo 
 Assim como definimos \texttt{map} (em \texttt{Functions.hs}) para aplicar uma função em uma lista, podemos declarar uma função \texttt{map} dentro de \texttt{BSTree.hs} com o mesmo propósito.
 Mais adiante, veremos como evitar conflitos entre funções homônimas.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 map :: (v1 -> v2) -> BSTree k v1 -> BSTree k v2
 map _ Empty = empty
 map f (Branch (key, val) ltree rtree) =
 	Branch (key, f val) ltree' rtree' where
 		ltree' = map f ltree
 		rtree' = map f rtree
-\end{lstlisting}
+\end{minted}
 
 É interessante que a lista e \texttt{BSTree} possam ambas ter seu conteúdo transformado.
 Inclusive, isso é esperado de tipos que representam estruturas de dados.
@@ -1061,14 +1054,14 @@ Mais adiante, veremos que essa propriedade ocorre com frequência em diversos ti
 Se quisermos comparar duas árvores por igualdade, devemos fazer \texttt{BSTree k v} ser uma instância da classe \texttt{Eq}.
 Isso pode ser feito da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance (Eq k, Eq v) => Eq (BSTree k v) where
 	Empty == Empty = True
 	Empty == _     = False
 	_     == Empty = False
 	(Branch (key, val) ltree rtree) == (Branch (key', val') ltree' rtree') =
 		and [key == key', val == val', ltree == ltree', rtree == rtree']
-\end{lstlisting}
+\end{minted}
 
 Nessa definição, exigimos que \texttt{k} e \texttt{v} sejam comparáveis por igualdade para determinar o comparador de igualdade de \texttt{BSTree k v}.
 Sua definição não deve ser difícil de entender.
@@ -1081,11 +1074,11 @@ Por fim, para concluir o módulo \texttt{BSTree.hs}, definimos sua lista de expo
 Essa é uma prática usual para esconder a definição de um tipo e funções auxiliares.
 Modificamos o começo de \texttt{BSTree.hs} da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module BSTree (BSTree, empty,
                insert, update, remove, map,
                lookup, contains) where
-\end{lstlisting}
+\end{minted}
 
 Módulos como \texttt{BSTree.hs}, que contém a definição de um tipo, costumam ter funções homônimas às definidas para outros tipos.
 Para evitar conflitos entre nomes de funções, é sempre bom importar esses módulos como \texttt{qualified}.
@@ -1115,12 +1108,12 @@ Sua definição simples, no entanto, não nos permite operar com tais sequência
 Se quisermos acessar o \texttt{k}-ésimo elemento de uma lista, precisamos fazer um número de operações proporcional a \texttt{k}.
 Isso fica evidente na definição do operador \texttt{(!!) :: [a] -> Int -> a}, que se encontra em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 (!!) :: [a] -> Int -> a
 [] !! _ = error "(!!): empty list"
 (x:_) !! 0 = x
 (_:xs) !! k = xs !! (k - 1)
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Implemente \emph{\texttt{(!?) :: [a] -> Int -> Maybe a}}, que deve ser uma versão segura de \emph{\texttt{(!!)}}.
@@ -1140,7 +1133,7 @@ Por exemplo, podemos admitir a inserção das chaves apenas em ordem crescente e
 
 Vamos definir nossa estrutura de dados no arquivo \texttt{SeqTree.hs}, que terá o seguinte conteúdo inicial.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module SeqTree where
 
 import Prelude (Int, (+), (-), (^),
@@ -1152,7 +1145,7 @@ import Maybe
 data SeqTree a = Empty
                | Leaf a
                | Branch Int Int (SeqTree a) (SeqTree a)
-\end{lstlisting}
+\end{minted}
 
 A primeira coisa notável em nossa definição é que não usamos um tipo para representar nossas chaves, uma vez que sequências são todas indexadas por inteiros.
 Outra observação está no fato de que apenas as folhas contém elementos do tipo \texttt{a}, enquanto os nós internos da árvore contém dois valores inteiros.
@@ -1166,23 +1159,23 @@ Dessa forma, podemos determinar se uma sub-árvore está cheia comparando esses 
 
 Antes de prosseguir, vamos definir alguns \emph{getters} para \texttt{SeqTree}, que serão bastante úteis para estabelecer algumas conveções.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 height :: SeqTree a -> Int
 height Empty = 0
 height (Leaf _) = 0
 height (Branch h l ltree rtree) = h
-\end{lstlisting}
+\end{minted}
 
 Usamos \texttt{height} para convencionar que a altura de árvores vazias e de árvores com um único nó é 0.
 À primeira vista parece estranho que folhas não tenham altura 1, mas perceba: se permitirnos que folhas tenham altura 1, estaremos admitindo que elas comportam $2^1 = 2$ elementos, o que não faz sentido.
 Por fim, o terceiro caso estabelece o primeiro valor inteiro de \texttt{Branch} como sua altura.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 leaves :: SeqTree a -> Int
 leaves Empty = 0
 leaves (Leaf _) = 1
 leaves (Branch h l ltree rtree) = l
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{leaves} retorna o número de folhas de uma \texttt{SeqTree}.
 \texttt{Empty} não tem folhas e \texttt{Leaf} tem exatamente uma folha.
@@ -1191,12 +1184,12 @@ O terceiro caso estabelece que o segundo valor inteiro de \texttt{Branch} repres
 Para construir valores de \texttt{SeqTree}, podemos usar seus três construtores (\texttt{Empty}, \texttt{Leaf} e \texttt{Branch}).
 Vamos, no entanto, evitar o uso do construtor \texttt{Branch} e preferir o uso da função \texttt{makeBranch}, com a finalidade de encapsular alguns cálculos.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 makeBranch :: SeqTree a -> SeqTree a -> SeqTree a
 makeBranch tx ty = Branch h' l' tx ty where
 	h' = max (height tx) (height ty) + 1
 	l' = leaves tx + leaves ty
-\end{lstlisting}
+\end{minted}
 
 Utilizar \texttt{makeBranch} é mais simples que utilizar \texttt{Branch}, pois altura e número de folhas já estão determinados.
 A altura da árvore criada é a altura da maior de suas sub-árvores, mais um.
@@ -1205,7 +1198,7 @@ Já o número de folhas da árvore é a soma do número de folhas de suas sub-á
 Vamos criar agora \emph{getters} para tomar as sub-árvores de uma \texttt{SeqTree}.
 Suas definições não exigem muitas explicações, mas observamos que há a convenção de que árvores vazias ou com apenas um nó têm ambas as suas sub-árvores vazias.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 leftTree :: SeqTree a -> SeqTree a
 leftTree Empty = Empty
 leftTree (Leaf _) = Empty
@@ -1215,26 +1208,26 @@ rightTree :: SeqTree a -> SeqTree a
 rightTree Empty = Empty
 rightTree (Leaf _) = Empty
 rightTree (Branch h l ltree rtree) = rtree
-\end{lstlisting}
+\end{minted}
 
 Agora precisamos definir a inserção de forma a garantir um balanceamento para \texttt{SeqTree}.
 Vamos fazer isso permitindo a inserção de elementos apenas após o último elemento da sequência representada por uma \texttt{SeqTree}. 
 
 Antes de definirmos a operação de inserção em uma \texttt{SeqTree}, faz-se necessário criar um tipo para representar a comparação de um elemento de um tipo ordenável em relação a dois outros elementos do mesmo tipo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 data Ordering = LL | LG | GL | GG
 
 compare :: Ord a => a -> a -> a -> Ordering
 compare x p q = cond (x < p)
                      (cond (x < q) LL LG)
                      (cond (x < q) GL GG)
-\end{lstlisting}
+\end{minted}
 
 Basicamente, criamos esse \texttt{Ordering} personalizado e sua função \texttt{compare} com o objetivo estético de expressar essa lógica de comparação fora de \texttt{insert}.
 A função \texttt{insert} é definida a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 insert :: SeqTree a -> a -> SeqTree a
 insert Empty x = Leaf x
 insert ltree@(Leaf _) x = makeBranch ltree (Leaf x)
@@ -1248,7 +1241,7 @@ insert branch x = decide (compare (leaves branch) halfCapacity capacity) where
 	rbranch' = insert rbranch x
 	halfCapacity = 2^(height branch - 1)
 	capacity = 2^(height branch)
-\end{lstlisting}
+\end{minted}
 
 Os dois primeiros casos de \texttt{insert} lidam com \texttt{Empty} e \texttt{Leaf}: inserir um elemento em uma árvore vazia resulta em uma única folha; inserir um elemento em uma folha resulta em uma árvore de altura 1 com duas folhas.
 Em seu último caso, \texttt{insert} tem de se preocupar com o número de folhas de \texttt{branch}:
@@ -1259,7 +1252,7 @@ caso \texttt{branch} tenha atingido seu número máximo de folhas, \texttt{branc
 Agora, definimos a função \texttt{lookup}, cujo objetivo é retornar o valor associado a uma posição da sequência.
 Note que consideramos nossas sequências indexadas a partir de 1, e não de 0.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 lookup :: SeqTree a -> Int -> Maybe a
 lookup Empty _ = Nothing
 lookup (Leaf x) 1 = Just x
@@ -1271,14 +1264,14 @@ lookup branch n = cond  (n <= halfCapacity)
 	lbranch = leftTree branch
 	rbranch = rightTree branch
 	n' = n - halfCapacity
-\end{lstlisting}
+\end{minted}
 
 Primeiro, temos os três casos elementares.
 No último caso, \texttt{lookup} verifica se o índice da posição buscada (\texttt{n}) é limitado pelo número máximo de folhas que uma sub-árvore de \texttt{branch} pode ter.
 Caso seja, e como \texttt{insert} garante que \texttt{branch} tem elementos em \texttt{rbranch} apenas se \texttt{lbranch} estiver cheia, então a busca pelo valor da posição \texttt{n} continua em \texttt{lbranch}.
 Do contrário, o valor associado a \texttt{n} não pode estar em uma das folhas de \texttt{lbranch}, e a busca deve continuar em \texttt{rbranch}, mas com uma modificação: \texttt{rbranch} representa uma subsequência que começa após os \texttt{halfCapacity} primeiros elementos da sequência representada por \texttt{branch}; dessa forma, o \texttt{n}-ésimo elemento da sequência de \texttt{branch} deverá estar na posição \texttt{n - halfCapacity} da subsequência de \texttt{rbranch}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 update :: SeqTree a -> Int -> (a -> a) -> SeqTree a
 update Empty _ _ = Empty
 update (Leaf x) 1 f = Leaf (f x)
@@ -1292,19 +1285,19 @@ update branch n f = cond (n <= halfCapacity)
 	lbranch' = update lbranch n f
 	rbranch' = update rbranch n' f
 	n' = n - halfCapacity
-\end{lstlisting}
+\end{minted}
 
 Acima, temos a função \texttt{update}, que atualiza o conteúdo de uma posição da sequência.
 A decisão sobre qual sub-árvore irá sofrer a atualização é a mesma de \texttt{lookup}.
 No entanto, em vez de retornar o elemento da posição \texttt{n}, \texttt{update} reconstrói as sub-árvores necessárias para que \texttt{f x} torne-se o valor da posição \texttt{n} da sequência representada por \texttt{branch}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 remove :: SeqTree a -> SeqTree a
 remove Empty = Empty
 remove (Leaf _) = Empty
 remove (Branch _ _ ltree Empty) = remove ltree
 remove (Branch _ _ ltree rtree) = makeBranch ltree (remove rtree)
-\end{lstlisting}
+\end{minted}
 
 Temos agora nossa função \texttt{remove}, que sempre remove o último elemento da sequência.
 Perceba que \texttt{remove} apenas deleta a folha que estiver mais à direita, o que a torna bem simples.
@@ -1313,27 +1306,27 @@ Além disso, perceba que o terceiro caso de \texttt{remove} é responsável por 
 Aproveitamos também para definir como transformar uma sequência de elementos.
 A função \texttt{map} explora a estrutura de \texttt{SeqTree}, alterando o conteúdo de suas folhas.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 map :: (a -> b) -> SeqTree a -> SeqTree b
 map _ Empty = Empty
 map f (Leaf x) = Leaf (f x)
 map f (Branch _ _ ltree rtree) = makeBranch ltree' rtree' where
 	ltree' = map f ltree
 	rtree' = map f rtree
-\end{lstlisting}
+\end{minted}
 
 Antes de preparar a lista de exportação de nosso módulo, fornecemos uma maneira de criar uma \texttt{SeqTree} vazia.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 empty :: SeqTree a
 empty = Empty
-\end{lstlisting}
+\end{minted}
 
 Por fim, definimos nossa lista de exportação, alterando o começo de \texttt{SeqTree.hs} da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module SeqTree (SeqTree, empty, insert, update, lookup, remove, map) where
-\end{lstlisting}
+\end{minted}
 
 Assim, temos concluído as definições necessárias para \texttt{SeqTree}.
 Futuramente, utilizaremos essa estrutura para resolver alguns problemas.
@@ -1345,9 +1338,9 @@ Nesta breve subseção, mostramos quais os passos necessários para se compilar 
 
 Dado um arquivo \texttt{Module.hs}, utilizamos o seguinte comando para compilá-lo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 ghc Module -W
-\end{lstlisting}
+\end{minted}
 
 Esse comando compila \texttt{Module.hs}, produzindo um tipo de saída conforme seu conteúdo.
 Aqui, \texttt{-W} habilita os \emph{warnings} do \texttt{ghc} que, em suas últimas versões, tornaram-se opcionais.
@@ -1356,14 +1349,14 @@ Certamente, é sempre bom usar \texttt{-W}.
 Se \texttt{Module.hs} tem em sua primeira linha algo como \texttt{module Module where}, então o comando acima produz um arquivo \texttt{Module.o}.
 Como exemplo, temos a compilação de \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ ghc List -W
 [1 of 4] Compiling Bool             ( Bool.hs, Bool.o )
 [2 of 4] Compiling Functions        ( Functions.hs, Functions.o )
 [3 of 4] Compiling Maybe            ( Maybe.hs, Maybe.o )
 [4 of 4] Compiling List             ( List.hs, List.o )
 $
-\end{lstlisting}
+\end{minted}
 
 Podemos perceber que, como \texttt{List} importa outros módulos, esses foram recursivamente compilados.
 Assim, a rotina de compilação do \texttt{ghc} usualmente dispensa o uso de ferramentas como \texttt{make}.
@@ -1373,7 +1366,7 @@ Se \texttt{Module.hs} tem \texttt{module Main where} como sua primeira linha, en
 Caso haja, \texttt{ghc} gera um executável \texttt{Module}.
 Como exemplo, vamos criar um arquivo \texttt{Hello.hs} com o seguinte conteúdo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (IO, putStrLn, getLine, (>>=))
@@ -1383,7 +1376,7 @@ import List
 
 main :: IO ()
 main = getLine >>= putStrLn . reverse
-\end{lstlisting}
+\end{minted}
 
 Há muitas coisas novas sendo usadas em \texttt{Hello.hs}.
 Basicamente, \texttt{IO} representa um valor que surge de operações de entrada e saída.
@@ -1396,7 +1389,7 @@ Por fim, o operador \mbox{\texttt{(>>=) :: Monad m => m a -> (a -> m b) -> m b}}
 
 Agora, compilamos \texttt{Hello.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ ghc Hello -W
 [1 of 5] Compiling Bool             ( Bool.hs, Bool.o )
 [2 of 5] Compiling Functions        ( Functions.hs, Functions.o )
@@ -1405,18 +1398,18 @@ $ ghc Hello -W
 [5 of 5] Compiling Main             ( Hello.hs, Hello.o )
 Linking Hello ...
 $
-\end{lstlisting}
+\end{minted}
 
 Observe que, dessa vez, o processo de compilação se estende até a fase de \emph{linking}.
 Mais uma vez, \texttt{ghc} compila os módulos necessários recursivamente.
 Podemos testar o que o executável \texttt{Hello} faz.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ ./Hello
 Hello
 olleH
 $
-\end{lstlisting}
+\end{minted}
 
 Isso deve ser suficiente para que possamos compilar programas, em um primeiro momento.
 
@@ -1429,7 +1422,7 @@ Seu conteúdo inicial se encontra a seguir.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Graph where
 
 import Prelude (Int, (+), (-), Bool(True, False),
@@ -1444,43 +1437,43 @@ import qualified SeqTree as Seq
 type Vertex = Int
 
 data Graph = G Int (Seq.SeqTree [Vertex])
-\end{lstlisting}
+\end{minted}
 
 Usamos valores inteiros para representar nossos vértices, e deixamos isso expresso de forma clara com o uso de \texttt{type}, que apenas cria sinônimos para tipos já existentes.
 Dessa forma, um grafo com $n$ vértices tem seus vértices numerados de 1 a $n$.
 Nosso tipo \texttt{Graph} tem dois campos: um inteiro, indicando seu número de vértices; uma \texttt{SeqTree [Vertex]}, que associa a cada vértice $v$ uma lista com os outros vértices das arestas relacionadas a $v$.
 Vamos desenvolver uma função para criar um grafo com nenhum vértice.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 empty :: Graph
 empty = G 0 Seq.empty
-\end{lstlisting}
+\end{minted}
 
 A função \texttt{empty} é bem simples.
 Ela apenas cria um grafo com 0 vértices e, portanto, com uma \texttt{SeqTree} vazia.
 A seguir, criamos um modo de adicionar um vértice ao grafo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 addVertex :: Graph -> Graph
 addVertex (G n adj) = G (n + 1) (Seq.insert adj [])
-\end{lstlisting}
+\end{minted}
 
 Ao adicionar um vértice, \texttt{addVertex} precisa atualizar o número de vértices do grafo.
 Além disso, o vértice recém-criado faz parte de nenhuma aresta, portanto inserimos \texttt{[]} em \texttt{adj}.
 Aproveitamos \texttt{addVertex} para criar uma função que retorna grafos sem arestas.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 edgeless :: Int -> Graph
 edgeless n = cond (n <= 0) empty (addVertex g) where
 	g = edgeless (n - 1)
-\end{lstlisting}
+\end{minted}
 
 A função a seguir verifica se um grafo tem um certo vértice.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 hasVertex :: Graph -> Vertex -> Bool
 hasVertex (G n _) v = and [1 <= v, v <= n]
-\end{lstlisting}
+\end{minted}
 
 Como consideramos que um grafo tem seus \texttt{n} vértices numerados entre 1 e \texttt{n}, \texttt{hasVertex} verifica justamente isso.
 Vale notar também que, se um grafo tem nenhum (zero) vértices, então \texttt{hasVertex} retorna \texttt{False} para qualquer vértice recebido como entrada.
@@ -1488,20 +1481,20 @@ Vale notar também que, se um grafo tem nenhum (zero) vértices, então \texttt{
 Definimos a função \texttt{vertices}, que retorna uma lista com os vértices do grafo, por uma questão de conveniência.
 Fazemos uso de \texttt{iterate}, proposta no Exercício \ref{exercicio:iterate}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 vertices :: Graph -> [Vertex]
 vertices (G n _) = take n (iterate (+1) 1)
-\end{lstlisting}
+\end{minted}
 
 Agora vamos definir a adição de uma aresta.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 addEdge :: Graph -> Vertex -> Vertex -> Graph
 addEdge g@(G n adj) u v = cond verticesExist g' g where
 	verticesExist = and [g `hasVertex` u, g `hasVertex` v]
 	g' = G n adj'
 	adj' = Seq.update adj u (v:)
-\end{lstlisting}
+\end{minted}
 
 Primeiro, \texttt{addEdge} verifica se o grafo \texttt{g} tem os vértices \texttt{u} e \texttt{v}.
 Aqui, notamos mais uma novidade sintática: funções ``binárias'' podem ser usadas como operadores infixos, isto é, entre seusa argumentos.
@@ -1514,20 +1507,20 @@ Os vizinhos de um vértice \texttt{v} são os vértices que aparecem em sua list
 Note que, a partir de \texttt{v}, podemos ir para qualquer vértice de sua lista, enquanto que o contrário nem sempre é verdade.
 A função \texttt{neighbors} retorna os vizinhos de um vértice em um grafo, aproveitando o fato de que \texttt{adj}, de acordo com a definição anterior, armazena justamente os vizinhos de cada vértice.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 neighbors :: Graph -> Vertex -> [Vertex]
 neighbors (G _ adj) v = fromMaybe [] (Seq.lookup adj v)
-\end{lstlisting}
+\end{minted}
 
 Na definição acima, note o uso de \texttt{fromMaybe} para tratar o caso de \texttt{v} não ser um vértice do grafo.
 Nesse caso, convencionamos que se um vértice não pertence ao grafo, ele não tem vizinhos.
 Para verificar se é possível ir de um vértice \texttt{u} para um certo vértice \texttt{v}, é preciso verificar se \texttt{v} é vizinho de \texttt{u}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 hasEdge :: Graph -> Vertex -> Vertex -> Bool
 hasEdge g u v = f (neighbors g u) where
 	f = isJust . find (==v)
-\end{lstlisting}
+\end{minted}
 
 Na definição acima, tomamos os vizinhos do vértice \texttt{u}.
 Em seguida, verificamos se \texttt{v} se encontra dentre os vizinhos de \texttt{u}.
@@ -1544,11 +1537,11 @@ O mais adequado seria representar os vizinhos de um vértice como uma árvore bi
 
 Após a constatação de que \texttt{Graph} não pode ter operações de remoção viáveis, fechamos nosso módulo com a seguinte alteração em seu início.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Graph (Graph, empty, edgeless,
               addVertex, hasVertex, vertices,
               addEdge, neighbors, hasEdge) where
-\end{lstlisting}
+\end{minted}
 
 Isso conclui as operações básicas em \texttt{Graph.hs}.
 
@@ -1559,7 +1552,7 @@ Vamos desenvolver uma fila de prioridade mínima.
 
 O conteúdo inicial de \texttt{Heap.hs} é dado a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Heap where
 
 import Prelude (Ord, (<=))
@@ -1569,7 +1562,7 @@ import Maybe
 
 data Heap k v = Empty
               | Heap (k, v) [Heap k v]
-\end{lstlisting}
+\end{minted}
 
 Nosso tipo \texttt{Heap k v} representa uma \emph{pairing heap}.
 \texttt{Heap k v} associa a cada valor de tipo \texttt{v} uma chave de tipo \texttt{k}, que é tratada como sua prioridade.
@@ -1584,15 +1577,15 @@ Logo teremos ilustrações disso.
 A função \texttt{lookup} retorna o elemento da raiz de \texttt{Heap}, que deve ser seu elemento prioritário.
 Sua definição não exige esclarecimentos e se encontra a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 lookup :: Heap k v -> Maybe (k, v)
 lookup Empty = Nothing
 lookup (Heap keyval _) = Just keyval
-\end{lstlisting}
+\end{minted}
 
 Agora, definimos \texttt{merge}, que combina os elementos de duas filas de prioridade.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 merge :: Ord k => Heap k v -> Heap k v -> Heap k v
 merge Empty h2 = h2
 merge h1 Empty = h1
@@ -1600,7 +1593,7 @@ merge h1@(Heap x@(key1, _) hs1) h2@(Heap y@(key2, _) hs2) =
 	cond (key1 <= key2) h1' h2' where
 		h1' = Heap x (h2:hs1)
 		h2' = Heap y (h1:hs2)
-\end{lstlisting}
+\end{minted}
 
 Perceba que \texttt{merge} é muito peculiar.
 Independente do tamanho das filas de prioridade que \texttt{merge} recebe, ela executa em tempo constante!
@@ -1611,20 +1604,20 @@ Observe ainda que ``colocar'' uma fila dentro da outra consiste apenas em adicio
 Agora que temos definido \texttt{merge}, podemos definir \texttt{insert} como a combinação de duas \emph{heaps}.
 A função \texttt{insert} é descrita abaixo e faz exatamente isso.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 insert :: Ord k => Heap k v -> (k, v) -> Heap k v
 insert h keyval = merge (Heap keyval []) h
-\end{lstlisting}
+\end{minted}
 
 Para implementar a remoção, precisamos criar uma função que faça todo o trabalho que \texttt{merge} decidiu ``procrastinar''.
 A função \texttt{mergeAll} cumpre esse papel, e faz uso de \texttt{merge} para isso.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 mergeAll :: Ord k => [Heap k v] -> Heap k v
 mergeAll [] = Empty
 mergeAll [h] = h
 mergeAll (h1:h2:hs) = merge (merge h1 h2) (mergeAll hs)
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	A função \emph{\texttt{mergeAll}} poderia ser definida como \emph{\texttt{mergeAll = foldl merge Empty}}.
@@ -1639,11 +1632,11 @@ Agora estamos aptos a definir a remoção do elemento mais prioritário.
 A função \texttt{pop} apenas remove a raiz da \emph{heap}, em seguida combinando sua lista de \emph{heaps} em uma só, que é retornada pela função.
 Sua  definição elementar é dada abaixo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 pop :: Ord k => Heap k v -> Heap k v
 pop Empty = Empty
 pop (Heap _ hs) = mergeAll hs
-\end{lstlisting}
+\end{minted}
 
 Podemos entender agora que existe um motivo para a definição de \texttt{mergeAll}.
 Em uma operação de remoção, o fato de \texttt{mergeAll} combinar as \emph{heaps} aos pares faz com que o número de \emph{heaps} a serem combinadas em uma remoção futura seja em torno da metade do número de \emph{heaps} combinadas nessa remoção.
@@ -1658,31 +1651,31 @@ Nossa última operação serve para alterar a chave do elemento mais prioritári
 Com isso, \texttt{Heap} permite remoções e alterações apenas no elemento mais prioritário.
 A definição de \texttt{changeKey} consiste em remover o elemento da raiz e reinserí-lo com uma nova chave.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 changeKey :: Ord k => Heap k v -> k -> Heap k v
 changeKey Empty _ = Empty
 changeKey h@(Heap (_, val) _) key' = insert (pop h) (key', val)
-\end{lstlisting}
+\end{minted}
 
 Para permitir que o usuário crie uma fila de prioridades vazia, encapsulamos \texttt{Empty} como segue.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 empty :: Heap k v
 empty = Empty
-\end{lstlisting}
+\end{minted}
 
 Para encerrar o módulo, definimos a lista de exportação de \texttt{Heap.hs}, alterando seu início.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Heap (Heap, empty, lookup, insert, pop, changeKey) where
-\end{lstlisting}
+\end{minted}
 
 Isso deve ser o bastante para termos uma fila de prioridade bem definida. 
 
 \begin{exercicio}
 	Uma lista pode ser utilizada como uma pilha, dado que permite inserção e remoção em $O(1)$ na sua extremidade esquerda.
 	Tome o tipo \emph{\texttt{Queue a}}, definido como segue.
-	\begin{lstlisting}[language=haskell, frame=single]
+	\begin{minted}[bgcolor=bg]{haskell}
 module Queue(Queue, empty, enqueue, dequeue) where
 
 import Prelude ()
@@ -1697,7 +1690,7 @@ enqueue = undefined
 
 dequeue :: Queue a -> Maybe (a, Queue a)
 dequeue = undefined
-	\end{lstlisting}
+	\end{minted}
 	Implemente \emph{\texttt{enqueue}} e \emph{\texttt{dequeue}}, e argumente que \emph{\texttt{dequeue}} tem custo amortizado $O(1)$.
 	Escreva sua implementação em \emph{\texttt{Queue.hs}}.
 \end{exercicio}
@@ -1712,7 +1705,7 @@ Começamos com uma classe bem simples, \texttt{Eq}.
 Essa classe já foi vista anteriormente, e contém comparadores relacionados com o conceito de igualdade.
 Usando \texttt{:info Eq} no \texttt{ghci}, obtemos uma saída parecida com essa.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Eq a where
 	(==) :: a -> a -> Bool
 	x == y = not (x /= y)
@@ -1720,7 +1713,7 @@ class Eq a where
 	(/=) :: a -> a -> Bool
 	x /= y = not (x == y)
 	{-# MINIMAL (==) | (/=) #-}
-\end{lstlisting}
+\end{minted}
 
 A despeito do que vínhamos fazendo (reimplementando quase tudo), não estamos aptos a redefinir as classes padrão de Haskell.
 Isso se dá porque há tipos cuja definição é intrínseca ao compilador, e assim não podemos ``abrir'' esses tipos e torná-los instâncias de classes.
@@ -1734,13 +1727,13 @@ Nesse caso, basta implementar uma delas para que um tipo se torne instância de 
 Isso é dito explicitamente no comentário logo abaixo da classe.
 Como exemplo, tornar as listas instâncias de \texttt{Eq} poderia ser feito como segue.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Eq a => Eq [a] where
 	[] == [] = True
 	[] == _ = False
 	_ == [] = False
 	(x:xs) == (y:ys) = and [x == y, xs == ys]
-\end{lstlisting}
+\end{minted}
 
 Podemos ver que duas listas são comparáveis por igualdade apenas quando o tipo de seus elementos também é.
 Isso é dito explicitamente na restrição feita sobre \texttt{a}, na primeira linha.
@@ -1755,7 +1748,7 @@ No último caso, \texttt{x == y} faz menção à implementação de \texttt{(==)
 A classe \texttt{Ord} contém os comparadores relacionados com o conceito de ordenação.
 Sua definição pode ser vista a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Eq a => Ord a where
 	compare :: a -> a -> Ordering
 	compare x y = cond (x <= y) (cond (x == y) EQ LT) GT
@@ -1771,7 +1764,7 @@ class Eq a => Ord a where
 	max :: a -> a -> a
 	min :: a -> a -> a
 	{-# MINIMAL compare | (<=) #-}
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Complete as definições padrão da classe \emph{\texttt{Ord}}.
@@ -1780,12 +1773,12 @@ class Eq a => Ord a where
 
 Como exemplo de uma de suas instâncias, mostramos como a lista pdoe ser descrita como uma instância de \texttt{Ord}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Ord a => Ord [a] where
 	[] <= _ = True
 	_ <= [] = False
 	(x:xs) <= (y:ys) = cond (x == y) (xs <= ys) (x < y)
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Faça de \emph{\texttt{Maybe}} uma instância de \emph{\texttt{Ord}}.
@@ -1797,7 +1790,7 @@ As instâncias de \texttt{Show}, portanto, podem todas ser representadas como st
 A classe \texttt{Read}, por sua vez, agrupa as funções relacionadas com a conversão de strings em valores de outros tipos.
 Assim, as instâncias de \texttt{Read} podem ter seus valores obtidos a partir de strings.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Show a where
 	showsPrec :: Int -> a -> ShowS
 	show :: a -> String
@@ -1810,14 +1803,14 @@ class Read a where
 	GHC.Read.readPrec :: Text.ParserCombinators.ReadPrec.ReadPrec a
 	GHC.Read.readListPrec :: Text.ParserCombinators.ReadPrec.ReadPrec [a]
 	{-# MINIMAL readsPrec | readPrec #-}
-\end{lstlisting}
+\end{minted}
 
 Enquanto podemos criar instâncias da classe \texttt{Show} de forma simples, o mesmo não pode ser dito de \texttt{Read}.
 Utilizamos as instâncias já existentes de \texttt{Read} para converter strings em valores dos tipos básicos de Haskell.
 Para isso, usamos \texttt{read :: Read a => String -> a}, uma função que nem mesmo faz parte da classe \texttt{Read}.
 Exemplificamos a seguir o uso de \texttt{show} e \texttt{read}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ ghci
 Prelude> show 25
 "25"
@@ -1840,17 +1833,17 @@ Prelude> read "[1, 2, 3]" :: [Double]
 Prelude> :q
 Leaving GHCi.
 $
-\end{lstlisting}
+\end{minted}
 
 Podemos perceber que \texttt{show} e \texttt{read} são úteis principalmente quando operando com arquivos (vamos aprender a utilizar arquivos em algum laboratório).
 Exemplificamos como lista poderia ser feita instância de \texttt{Show}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Show a => Show [a] where
 	show [] = "[]"
 	show xs = "[" ++ f xs ++ "]" where
 		f = concat . intercalate "," . map show
-\end{lstlisting}
+\end{minted}
 
 Nessa definição, apenas o segundo caso precisa de atenção.
 A função \texttt{f} transforma todos os elementos da lista em strings (podemos fazer isso por conta de \texttt{Show a}), em seguida intercala a lista resultante com \texttt{","}, e por fim concatena todas as strings da lista.
@@ -1867,7 +1860,7 @@ Além desses, tuplas com componentes desse tipo instanciam \texttt{Ordering}.
 
 Para tipos numéricos, temos a classe \texttt{Num}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Num a where
 	(+) :: a -> a -> a
 	(-) :: a -> a -> a
@@ -1877,7 +1870,7 @@ class Num a where
 	signum :: a -> a
 	fromInteger :: Integer -> a
 	{-# MINIMAL (+), (*), abs, signum, fromInteger, (negate | (-)) #-}
-\end{lstlisting}
+\end{minted}
 
 Os tipos \texttt{Word}, \texttt{Integer}, \texttt{Int}, \texttt{Float} e \texttt{Double} são instâncias de \texttt{Num}, e suas definições são dadas em baixo nível.
 Observe ainda que \texttt{Integer} não é instância de \texttt{Bounded}.
@@ -1887,13 +1880,13 @@ A desvantagem de \texttt{Integer} é que suas operações são mais custosas que
 Note ainda que \texttt{Num} não contém a operação de divisão, já que nem todos os tipos numéricos conseguem representar precisamente resultados de divisões arbitrárias.
 Para isso existe a classe \texttt{Fractional}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Num a => Fractional a where
 	(/) :: a -> a -> a
 	recip :: a -> a
 	fromRational :: Rational -> a
 	{-# MINIMAL fromRational, (recip | (/)) #-}
-\end{lstlisting}
+\end{minted}
 
 Em \texttt{Fractional}, estão contidas as operações de divisão, inversa e conversão a partir de \texttt{Rational}, e esse representa racionais em precisão arbitrária usando dois \texttt{Integer}s.
 Estendendo \texttt{Fractional}, temos a classe \texttt{Floating}, que agrupa operações envolvendo trigonometria, potências e logaritmos.
@@ -1903,7 +1896,7 @@ A classe \texttt{Real} trata de conversões para o tipo \texttt{Rational}, e por
 Já a classe \texttt{Integral} trata de divisões com restos em inteiros.
 A classe \texttt{RealFrac}, por sua vez, cuida de truncamentos e arredondamentos.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class (Real a, Fractional a) => RealFrac a where
 	properFraction :: Integral b => a -> (b, a)
 	truncate :: Integral b => a -> b
@@ -1911,7 +1904,7 @@ class (Real a, Fractional a) => RealFrac a where
 	ceiling :: Integral b => a -> b
 	floor :: Integral b => a -> b
 	{-# MINIMAL properFraction #-}
-\end{lstlisting}
+\end{minted}
 
 Das funções de \texttt{RealFrac}, apenas \texttt{properFraction} exige esclarecimentos.
 Essa função retorna um valor numérico decomposto em sua parte inteira e sua parte fracionária.
@@ -1924,12 +1917,12 @@ Na próxima subseção, tratamos de classes que abstraem o uso de funções, atr
 Aqui, tratamos das três classes mencionadas no título.
 Antes de prosseguir, contudo, vamos adicionar a seguinte definição a \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 ($) :: (a -> b) -> a -> b
 f $ x = f x
 
 infixl 0 $
-\end{lstlisting}
+\end{minted}
 
 É isso mesmo.
 O operador \texttt{(\$)} aplica seu segundo argumento à função recebida como primeiro argumento.
@@ -1941,12 +1934,12 @@ No texto a seguir, veremos operadores que representam aplicações ``especiais''
 
 Tratamos inicialmente de \texttt{Functor}, que tem a seguinte definição.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Functor (f :: * -> *) where
 	fmap :: (a -> b) -> f a -> f b
 	(<$) :: a -> f b -> f a
 	{-# MINIMAL fmap #-}
-\end{lstlisting}
+\end{minted}
 
 Precisamos fazer uma pausa para explicar o que significa \texttt{* -> *}.
 Em Haskell, valores têm tipos (\texttt{1} pode ser do tipo \texttt{Int} ou \texttt{Integer}, por exemplo), assim como tipos têm \emph{kinds} (\emph{kind} pode significar tipo, então seria estranho traduzir).
@@ -1968,27 +1961,27 @@ A função \texttt{fmap} aplica uma função aos elementos contidos em um valor 
 O operador \texttt{(<\$)}, por sua vez, substitui todos os elementos de um valor de um tipo parametrizado por um certo elemento.
 Como exemplo de \texttt{Functor}, temos as listas, e sua instanciação é ilustrada a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Functor [] where
 	fmap = map
-\end{lstlisting}
+\end{minted}
 
 Essa definição é padrão de Haskell, e não precisamos implementá-la.
 Devemos, no entanto, instanciar \texttt{Maybe} como \texttt{Functor}, e a definição seguinte deve se encontrar em \texttt{Maybe.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Functor Maybe where
 	fmap _ Nothing = Nothing
 	fmap f (Just x) = Just (f x)
-\end{lstlisting}
+\end{minted}
 
 Perceba que não é preciso definir \texttt{(<\$)}, uma vez que existe a implementação padrão \mbox{\texttt{(x <\$) = fmap f where f \_ = x}}.
 Fazemos também de \texttt{BSTree k} uma instância de \texttt{Functor}, pondo o código que segue em \texttt{BSTree.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Functor (BSTree k) where
 	fmap = map
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Faça de \emph{\texttt{SeqTree}} uma instância de \emph{\texttt{Functor}}.
@@ -2004,7 +1997,7 @@ Trazemos uma breve ilustração de seu uso.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> :t ($)
 ($) :: (a -> b) -> a -> b
 Prelude> :t (<$>)
@@ -2024,7 +2017,7 @@ Prelude> (*2) <$> Nothing
 Nothing
 Prelude> (*2) <$> (Just 4)
 Just 8
-\end{lstlisting}
+\end{minted}
 
 Vemos a distinção entre \texttt{(\$)} e \texttt{(<\$>)}.
 Enquanto \texttt{(\$)} permite a aplicação de uma função a valores ``soltos'', o operador \texttt{(<\$>)} aplica a função a valores ``contidos'' em instâncias de \texttt{Functor}.
@@ -2034,7 +2027,7 @@ Como Haskell tem suas funções como habitantes de primeira classe, é perfeitam
 Podemos imaginar que essas funções estão sob um certo ``contexto'', e definitivamente queremos utilizá-las (senão não faria sentido guardá-las).
 Essa é a motivação básica de \texttt{Applicative}: aplicar funções contidas em estruturas de dados.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Functor f => Applicative (f :: * -> *) where
 	pure :: a -> f a
 	(<*>) :: f (a -> b) -> f a -> f b
@@ -2042,7 +2035,7 @@ class Functor f => Applicative (f :: * -> *) where
 	(*>) :: f a -> f b -> f b
 	(<*) :: f a -> f b -> f a
 	{-# MINIMAL pure, ((<*>) | liftA2) #-}
-\end{lstlisting}
+\end{minted}
 
 Percebemos que instâncias de \texttt{Applicative} devem ter o mesmo \emph{kind} de instâncias de \texttt{Functor}.
 Mais ainda: instâncias de \texttt{Applicative} devem ser também instâncias de \texttt{Functor}.
@@ -2053,21 +2046,21 @@ Trataremos das demais funções de \texttt{Applicative} em breve.
 
 Como exemplo, listas são instância de \texttt{Applicative}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Applicative [] where
 	pure x = [x]
 	
 	[] <*> _ = []
 	_ <*> [] = []
 	(f:fs) <*> xs = f <$> xs ++ fs <*> xs
-\end{lstlisting}
+\end{minted}
 
 Enquanto instância de \texttt{Applicative}, o tipo lista representa computações não-determinísticas.
 Ilustramos esse conceito a seguir.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> xs = [1,2,3]
 Prelude> ys = [10,20,30]
 Prelude> (+) <$> xs <$> ys
@@ -2092,7 +2085,7 @@ Prelude> (+) <$> pure 5 <*> ys
 [15,25,35]
 Prelude> (+) <$> pure 5 <*> pure 7
 12
-\end{lstlisting}
+\end{minted}
 
 Vemos que a expressão \texttt{(+) <\$> xs <*> ys} retorna os resultados de todas as aplicações possíveis de \texttt{(+)} aos elementos de \texttt{xs} (como primeiro argumento) e \texttt{ys} (como segudo argumento).
 Primeiro, \mbox{\texttt{(+) <\$> xs}} é uma lista de funções, mais precisamente as aplicações parciais de \texttt{(+)} aos elementos de \texttt{xs}.
@@ -2119,7 +2112,7 @@ Essa, no entanto, não é a única interpretação plausível que tornaria lista
 É possível pensar, por exemplo, que listas poderiam instanciar \texttt{Applicative} em termos de \texttt{zipWith}.
 Como um tipo pode instanciar uma classe no máximo uma vez, adicionamos as seguintes definições a \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 newtype ZipList a = ZL [a]
 
 zipList :: [a] -> ZipList a
@@ -2127,7 +2120,7 @@ zipList xs = ZL xs
 
 getZipList :: ZipList a -> [a]
 getZipList (ZL xs) = xs
-\end{lstlisting}
+\end{minted}
 
 Aqui, vemos nosso primeiro uso de \texttt{newtype}.
 A palavra \texttt{newtype} permite a construção de tipos muito simples, com um único caso e um único campo.
@@ -2137,20 +2130,20 @@ Melhor ainda: como \texttt{newtype} pode apenas criar tipos dessa forma, o encap
 
 Agora, devemos fazer de \texttt{ZipList} uma instância de \texttt{Functor} e \texttt{Applicative}, nessa ordem.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Functor ZipList where
 	fmap f (ZL xs) = ZL (fmap f xs)
 
 instance Applicative ZipList where
 	pure = zipList . repeat
 	(ZL fs) <*> (ZL xs) = ZL (zipWith ($) fs xs)
-\end{lstlisting}
+\end{minted}
 
 Note que \texttt{ZipList} torna-se instância de \texttt{Functor} com a mesma semântica das listas.
 No entanto, \texttt{ZipList} é instância de \texttt{Applicative} com uma semântica iterativa, tornando-se distinta das listas nesse aspecto.
 Ilustramos o uso de \texttt{ZipList} a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *List> xs = [1,2,3]
 *List> ys = [10,20,30]
 *List> (+) <$> xs <*> ys
@@ -2159,24 +2152,24 @@ Ilustramos o uso de \texttt{ZipList} a seguir.
 [11,22,33]
 *List> getZipList ((+) <$> pure 5 <*> zipList ys)
 [15,25,35]
-\end{lstlisting}
+\end{minted}
 
 Um outro exemplo de \texttt{Applicative} é \texttt{Maybe}.
 Definimos \texttt{Maybe} como \texttt{Applicative} pelo código que segue, escrito em \texttt{Maybe.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Applicative Maybe where
 	pure x = Just x
 	
 	Nothing <*> _ = Nothing
 	_ <*> Nothing = Nothing
 	(Just f) <*> (Just x) = Just (f x)
-\end{lstlisting}
+\end{minted}
 
 Claramente, \texttt{Maybe} representa computações que podem falhar, tendo nenhum ou exatamente um resultado.
 Ilustramos esse conceito a seguir.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> (+) <$> Just 3 <*> Just 4
 Just 7
 Prelude> (+) <$> Just 3 <*> pure 4
@@ -2185,7 +2178,7 @@ Prelude> (+) <$> Just 3 <*> Nothing
 Nothing
 Prelude> (+) <$> Nothing <*> pure 4
 Nothing
-\end{lstlisting}
+\end{minted}
 
 Com isso, vemos que o uso de \texttt{Maybe} enquanto \texttt{Applicative} nos permite criar, a partir de computações que podem falhar, computações maiores com essa mesma semântica.
 O uso de \texttt{(<\$>)} e \texttt{(<*>)} nos poupa do trabalho de tratar os casos de \texttt{Maybe}, e nos diz que computações com partes que podem falhar são computações que podem falhar como um todo.
@@ -2199,7 +2192,7 @@ O operador \texttt{(<*)} tem o mesmo comportamento de \texttt{(*>)}, porém o pa
 Dito isso, nos concentramos em \texttt{(*>)}, cujo papel é aplicar a semântica de seu primeiro argumento (ignorando seus valores) no segundo.
 Vamos exemplificar o que isso significa.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> [] *> pure 3
 []
 Prelude> [1,2,3] *> pure 3
@@ -2216,7 +2209,7 @@ Prelude> Just 3 *> Nothing
 Nothing
 Prelude> pure 3 *> Nothing
 Nothing
-\end{lstlisting}
+\end{minted}
 
 Isso evidencia que \texttt{(*>)} é definido como \texttt{x *> y = f <\$> x <*> y where f \_ q = q}.
 O operador \texttt{(*>)} costuma ser utilizado quando se quer tomar apenas o valor semântico de uma computação, ignorando seu resultado.
@@ -2245,33 +2238,33 @@ Uma função muito interessante de se implementar é \texttt{when}, que modifica
 Basicamente, \texttt{when} pode ser usada para condicionar a realização de uma certa computação.
 Sua definição é escrita em \texttt{Bool.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 when :: Applicative f => Bool -> f () -> f ()
 when True x = x
 when False _ = pure ()
 
 unless :: Applicative f => Bool -> f () -> f ()
 unless = when . not
-\end{lstlisting}
+\end{minted}
 
 Além de \texttt{when}, definimos também sua versão negada, \texttt{unless}.
 Por fim, temos \texttt{forever :: Applicative f => f a -> f b}, que repete uma computação indefinidamente.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 forever :: Applicative f => f a -> f b
 forever x = x *> forever x
-\end{lstlisting}
+\end{minted}
 
 Agora vamos falar sobre \texttt{Alternative}, definida em \texttt{Control.Applicative}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Applicative f => Alternative (f :: * -> *) where
 	empty :: f a
 	(<|>) :: f a -> f a -> f a
 	some :: f a -> f [a]
 	many :: f a -> f [a]
 	{-# MINIMAL empty, (<|>) #-}
-\end{lstlisting}
+\end{minted}
 
 A classe \texttt{Alternative} é instanciada por tipos que, de alguma forma, trazem o conceito de ser vazio ou não.
 A função \texttt{empty} retorna a representação ``vazia'' de um tipo, que geralmente é inferido pela expressão em que \texttt{empty} é utilizada.
@@ -2279,30 +2272,30 @@ O operador \texttt{(<|>)} representa uma espécie de união, e combina dois valo
 
 As listas são instância de \texttt{Alternative}, da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Alternative [] where
 	empty = []
 	(<|>) = (++)
-\end{lstlisting}
+\end{minted}
 
 Com isso, podemos instanciar \texttt{ZipList} como \texttt{Alternative} com a seguinte definição, que se encontra em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Alternative ZipList where
 	empty = zipList empty
 	(ZL xs) <|> (ZL ys) = ZL (xs <|> ys)
-\end{lstlisting}
+\end{minted}
 
 Em se tratando de listas ou \texttt{ZipLists}, a definição de \texttt{Alternative} é bem simples e intuitiva.
 O tipo \texttt{Maybe} é instanciado como \texttt{Alternative} com as seguintes definições, que se encontram em \texttt{Maybe.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Alternative Maybe where
 	empty = Nothing
 	
 	Nothing <|> y = y
 	x <|> _ = x
-\end{lstlisting}
+\end{minted}
 
 As instâncias de \texttt{Alternative} são particularmente úteis para representar os resultados de computações que podem falhar.
 Enquanto computações não-determinísticas, representadas por listas, apenas têm seus resultados mesclados, o tipo \texttt{Maybe} apresenta um comportamento mais interessante:
@@ -2317,11 +2310,11 @@ Dessa forma, podemos criar uma sequência de computações que podem falhar, de 
 Descrevemos a função \texttt{guard}, que permite ``traduzir'' um valor booleano, \texttt{True} ou \texttt{False}, para um valor semântico de \texttt{Alternative}, não-vazio ou \texttt{empty}, respectivamente.
 Essa definição é escrita em \texttt{Bool.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 guard :: Alternative f => Bool -> f ()
 guard True = pure ()
 guard False = empty
-\end{lstlisting}
+\end{minted}
 
 Numa seção futura, tratarenos de \texttt{Monad}, que leva adiante as abstrações definidas em \texttt{Functor} e \texttt{Applicative}.
 
@@ -2334,10 +2327,10 @@ No entanto, temos nos deparado com funções recursivas que não têm um caso ba
 
 Temos em \texttt{nats} mais um exemplo desse tipo de definição.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 nats :: [Int]
 nats = 1 : map (+1) nats
-\end{lstlisting}
+\end{minted}
 
 Claramente, \texttt{nats} é baseada na definição indutiva dos naturais, e de fato representa uma lista infinita contendo os naturais.
 Observamos o seguinte comportamento:
@@ -2346,20 +2339,20 @@ além disso, a lista retornada por \texttt{(1:)} é justamente o argumento passa
 Podemos fazer uma análise similar para \texttt{repeat} e \texttt{cycle}.
 Reescrevemos \texttt{nats} de forma que isso fique evidente.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 nats :: [Int]
 nats = ((1:) . (map (+1))) nats
-\end{lstlisting}
+\end{minted}
 
 Se admitirmos que \texttt{f = (1:) . (map (+1))}, temos que \texttt{nats = f nats}.
 Nesse momento, pode ser bastante estranho e desconfortável perceber que a definição de \texttt{nats} depende exclusivamente de \texttt{f}, uma vez que \texttt{nats}, por mais que seja o argumento passado para \texttt{f}, é o retorno de \texttt{f (f (f (f (...))))}.
 Isso pode dar um nó na mente, mas é útil a ponto de generalizarmos esse conceito para funções com argumento e retorno de mesmo tipo.
 Escrevemos a seguinte definição em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fix :: (a -> a) -> a
 fix f = f (fix f)
-\end{lstlisting}
+\end{minted}
 
 Embora simples, \texttt{fix} é um tanto estranha.
 Ela toma \texttt{f} e deve retornar um elemento de tipo \texttt{a}.
@@ -2368,19 +2361,19 @@ No fim das contas, \texttt{fix f == f (f (f (f (...))))}.
 
 Bem, não seria muito interessante passar uma função de assinatura \texttt{Int -> Int} para \texttt{fix}, por exemplo, afinal não poderíamos usar seu retorno.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Functions Prelude> fix (+1)
 *** Exception: stack overflow
 *Functions Prelude>
-\end{lstlisting}
+\end{minted}
 
 Para usá-la de forma útil, é interessante que o retorno de \texttt{f} possa ser construído incrementalmente.
 O retorno de \texttt{nats}, por exemplo, cumpre esse requisito por ser uma lista.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 nats :: [Int]
 nats = fix $ (1:) . (map (+1))
-\end{lstlisting}
+\end{minted}
 
 Embora \texttt{fix} não tenha caso base, \texttt{nats} pode ser usada mesmo que seja escrita dessa forma, por conta da preguiça de Haskell.
 
@@ -2400,21 +2393,21 @@ Embora \texttt{fix} não tenha caso base, \texttt{nats} pode ser usada mesmo que
 
 \begin{exercicio}
 	Tome a função \emph{\texttt{range}} definida como segue.
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 range :: Int -> [Int]
 range 0 = [0]
 range x = x : range (x - 1)
-\end{lstlisting}
+\end{minted}
 	Escreva \emph{\texttt{range}} em termos de \emph{\texttt{fix}}.
 \end{exercicio}
 
 \begin{exercicio}	\label{exercicioFixFactorial}
 	Tome a seguinte função.
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 f :: (Int -> Int) -> Int -> Int
 f _ 0 = 1
 f rec n = n * rec (n - 1)
-\end{lstlisting}
+\end{minted}
 A função \emph{\texttt{f}} parece estar calculando fatorial, mas é bizarra.
 Ela ``conhece'' a definição de fatorial, mas não podemos dizer que ela é recursiva, pois se define em termos de \emph{\texttt{rec}}.
 No entanto, se \emph{\texttt{rec}} calculasse fatorial, \emph{\texttt{f rec}} seria umaa definição plausível de fatorial.
@@ -2428,31 +2421,31 @@ Esse conceito pode ser utilizado para, dentre outras coisas, implementar versõe
 
 Para ilustrar essa ideia, vamos tomar um caso clássico.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fib :: Int -> Int
 fib 0 = 0
 fib 1 = 1
 fib n = fib (n - 1) + fib (n - 2)
-\end{lstlisting}
+\end{minted}
 
 Basta uma verificação superficial para constatar que \texttt{fib} retorna o \texttt{n}-ésimo número de Fibonacci, e que essa não é uma boa implementação.
 Por diversão, vamos tomar medidas do quão ruim ela é.
 Para isso, vamos criar um arquivo \texttt{Memo.hs}, com o seguinte conteúdo inicial (provisório), e escrever a definição de \texttt{fib} nesse arquivo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Memo where
 
 import Prelude (Int, (-), (+))
 
 import Functions
 import List
-\end{lstlisting}
+\end{minted}
 
 Agora vamos aos testes.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> :l Memo
 [1 of 1] Compiling Memo             ( Memo.hs, interpreted )
 Ok, one module loaded.
@@ -2476,7 +2469,7 @@ Ok, one module loaded.
 9227465
 (8.21 secs, 4,897,222,696 bytes)
 *Memo>
-\end{lstlisting}
+\end{minted}
 
 Vamos analisar rapidamente o uso de tempo e espaço.
 Observamos que, da chamada \mbox{\texttt{fib 25}} para \texttt{fib 30}, o tempo de execução aumentou cerca de $6,5$ vezes, enquanto de \texttt{fib 30} para \mbox{\texttt{fib 35}} o aumento foi de aproximadamente $10,4$ vezes.
@@ -2486,12 +2479,12 @@ Nesse pequeno experimento, a única coisa boa que aprendemos foi o uso de \textt
 
 \begin{exercicio}	\label{exercicio:fix2}
 	Considere a seguinte definição.
-	\begin{lstlisting}[language=haskell, frame=single]
+	\begin{minted}[bgcolor=bg]{haskell}
 	fix2 :: (a -> a) -> a
 	fix2 f = y where y = f y
-	\end{lstlisting}
+	\end{minted}
 	Observe o seguinte experimento.
-	\begin{lstlisting}[language=haskell, frame=single]
+	\begin{minted}[bgcolor=bg]{haskell}
 	*Functions Prelude> :set +s
 	*Functions Prelude> f x = fix (x:)
 	(0.00 secs, 0 bytes)
@@ -2503,17 +2496,17 @@ Nesse pequeno experimento, a única coisa boa que aprendemos foi o uso de \textt
 	*Functions Prelude> head (drop 10000000 (g 2))
 	2
 	(0.07 secs, 63,416 bytes)
-	\end{lstlisting}
+	\end{minted}
 	Explique o que torna \emph{\texttt{fix2}} mais eficiente que \emph{\texttt{fix}}.
 \end{exercicio}
 
 Em vista do desastre que é a atual implementação de \texttt{fib}, propomos uma solução eficiente e elegante, que é praticamente um mascote da linguagem Haskell.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fib :: Int -> Int
 fib = (fibs !!) where
 	fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
-\end{lstlisting}
+\end{minted}
 
 Nessa implementação, \texttt{fib} recebe \texttt{n} e toma o \texttt{n}-ésimo elemento de uma lista.
 Essa lista é justamente uma definição recursiva para a sequência de Fibonacci.
@@ -2522,7 +2515,7 @@ Escrita dessa forma, \texttt{fib} é eficiente porque, uma vez que os elementos 
 Note como a primeira versão de \texttt{fib} precisa calcular um número de Fibonacci mais de uma vez.
 Enfim, vamos aos testes.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Memo> :set +s
 *Memo> fib 35
 9227465
@@ -2531,7 +2524,7 @@ Enfim, vamos aos testes.
 9227465
 (0.00 secs, 71,760 bytes)
 *Memo>
-\end{lstlisting}
+\end{minted}
 
 Perceba que, na primeira chamada \texttt{fib 35}, o elemento correspondente em \texttt{fibs} ainda não havia sido calculado.
 Como a segunda chamada não precisava calcular esse elemento, mas apenas retorná-lo, seu tempo de execução é irrisório.
@@ -2541,13 +2534,13 @@ No entanto, essa abordagem não se generaliza para outras funções, já que usa
 
 Uma terceira forma de escrever \texttt{fib} é apresentada abaixo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fib :: Int -> Int
 fib = fix f where
 	f _ 0 = 0
 	f _ 1 = 1
 	f rec n = rec (n - 1) + rec (n - 2)
-\end{lstlisting}
+\end{minted}
 
 É aqui que entramos na toca do coelho.
 Primeiro, \texttt{fix} permite que a função \texttt{f} receba \mbox{\texttt{f (f (f (f (...))))}} como seu primeiro argumento.
@@ -2555,13 +2548,13 @@ Segundo, isso é equivalente à nossa primeira definição de \texttt{fib}.
 Então por que escrevê-la de uma forma mais complicada?
 Antes de responder a essa pergunta, testamos essa definição.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Memo> :set +s
 *Memo> fib 35
 9227465
 (22.00 secs, 11,892,075,208 bytes)
 *Memo>
-\end{lstlisting}
+\end{minted}
 
 Essa versão é ainda pior!
 Mas não tiramos proveito da ``decomposição'' da primeira versão de \texttt{fib}, aqui expressa como \texttt{f}.
@@ -2571,12 +2564,12 @@ Se \texttt{rec} fosse uma versão eficiente de \texttt{f}, teríamos obtido uma 
 
 Como \texttt{fib} tem assinatura \texttt{Int -> Int} e espera um argumento não-negativo, tratamos de criar um esquema de \emph{cache} adequado para funções com essas características.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 memo :: (Int -> b) -> Int -> b
 memo f = (ys !!) where
 	xs = iterate (+1) 0
 	ys = map f xs
-\end{lstlisting}
+\end{minted}
 
 A definição de \texttt{memo} é bastante ingênua, estúpida até.
 Para uma função \mbox{\texttt{f :: Int -> Int}} que espere argumentos não-negativos, \texttt{f} e \texttt{memo f} são equivalentes.
@@ -2587,7 +2580,7 @@ Por outro lado, fazendo \texttt{g = memo f}, a primeira chamada \texttt{g n} ter
 Tomando a primeira versão de \texttt{fib}, é tentador considerar que \mbox{\texttt{memofib = memo fib}} seja eficiente.
 Perceba, todavia, que \texttt{memofib} tem o mesmo custo de \texttt{fib} sempre que chamada para um novo argumento.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Memo> memofib = memo fib
 *Memo> :set +s
 *Memo> memofib 35
@@ -2603,7 +2596,7 @@ Perceba, todavia, que \texttt{memofib} tem o mesmo custo de \texttt{fib} sempre 
 24157817
 (21.13 secs, 12,820,992,200 bytes)
 *Memo>
-\end{lstlisting}
+\end{minted}
 
 Esse experimento evidencia outra coisa muito chata sobre \texttt{memofib}.
 As duas chamadas \texttt{memofib 35} nos mostram que os retornos de \texttt{fib} realmente estão sendo salvos por \texttt{memo}.
@@ -2614,18 +2607,18 @@ Tomando \texttt{f} como a versão ``decomposta'' de \texttt{fib}, \texttt{f rec}
 Ora, nesse caso \texttt{memo (f rec)} é uma implementação eficiente de \texttt{fib}.
 Usamos \texttt{fix} para ligar as duas pontas.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 fib :: Int -> Int
 fib = fix (memo . f) where
 	f _ 0 = 0
 	f _ 1 = 1
 	f rec n = rec (n - 1) + rec (n - 2)
-\end{lstlisting}
+\end{minted}
 
 E aqui começa a festa do chá.
 Vamos usar a sanidade que nos resta para testar essa definição de \texttt{fib}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Memo> :set +s
 *Memo> fib 35
 9227465
@@ -2646,7 +2639,7 @@ Vamos usar a sanidade que nos resta para testar essa definição de \texttt{fib}
 24157817
 (0.00 secs, 72,736 bytes)
 *Memo>
-\end{lstlisting}
+\end{minted}
 
 Conseguimos mais uma versão de \texttt{fib} verdadeiramente eficiente.
 Para entender como ela funciona, note que \texttt{f} ignora seu primeiro argumento nos casos base.
@@ -2667,7 +2660,7 @@ Representar a \emph{cache} como uma lista infinita não é a abordagem mais efic
 Vamos, portanto, representar a \emph{cache} como uma árvore binária.
 Para isso, precisamos de uma árvore binária infinita, definida em \texttt{InfinityTree.hs} como segue.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module InfinityTree (InfinityTree(Branch), find) where
 
 import Prelude (Int, (==), (-), divMod,
@@ -2692,7 +2685,7 @@ find (Branch _ lt rt) n = cond (r == 1)
                                (find lt q)
                                (find rt (q - 1)) where
     (q, r) = divMod n 2
-\end{lstlisting}
+\end{minted}
 
 A definição de \texttt{InfinityTree} representa uma árvore infinita, já que não permite folhas em sua estrutura.
 A única função de acesso a seus elementos é \texttt{find}, que ``passeia'' pela árvore conforme a paridade de um \texttt{Int} dado como entrada:
@@ -2700,14 +2693,14 @@ um número ímpar (par) leva a busca para a esquerda (direita).
 
 Com isso, podemos escrever uma versão mais eficiente de \texttt{memo}, que representa a \emph{cache} em uma estrutura arbórea.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 memo :: (Int -> b) -> Int -> b
 memo f = find ftree where
 	natTree = Branch 0 oddTree evenTree where
 		oddTree = ((+1) . (*2)) <$> natTree
 		evenTree = ((+2) . (*2)) <$> natTree
 	ftree = f <$> natTree
-\end{lstlisting}
+\end{minted}
 
 Perceba que apenas a estrutura utilizada internamente sofreu modificações.
 Com isso, a nova implementação de \texttt{memo} tem a mesma assinatura da anterior, e portanto nossa definição de \texttt{fib} não precisa de alterações.
@@ -2715,7 +2708,7 @@ Vamos fazer novos testes.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Memo> :set +s
 *Memo> fib 35
 9227465
@@ -2736,7 +2729,7 @@ Vamos fazer novos testes.
 24157817
 (0.00 secs, 70,680 bytes)
 *Memo>
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Verifique se existe ganho de desempenho em definir \emph{\texttt{fib}} em termos de \emph{\texttt{fix2}}, definida no Exercício \ref{exercicio:fix2}.
@@ -2782,14 +2775,14 @@ Agora, vamos analisar funções que produzem um contexto a partir de elementos s
 Tais funções são ditas \emph{monádicas}, e contextos que podem ser criados a partir de elementos simples são representados por estruturas que chamamos de \emph{mônadas}.
 Tais tipos são agrupados na seguinte classe.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 class Applicative m => Monad (m :: * -> *) where
 	(>>=) :: m a -> (a -> m b) -> m b
 	(>>) :: m a -> m b -> m b
 	return :: a -> m a
 	fail :: String -> m a
 	{-# MINIMAL (>>=) #-}
-\end{lstlisting}
+\end{minted}
 
 Aqui, vemos um operador que utilizamos bastante nos laboratórios.
 Finalmente vamos entender \texttt{(>>=)}!
@@ -2815,11 +2808,11 @@ Inclusive, a única finalidade de \texttt{join} é ``combinar'' contextos.
 Vamos apresentar nossa primeira mônada, fazendo com que \texttt{Maybe} instancie \texttt{Monad}.
 As definições que seguem devem ser escritas em \texttt{Maybe.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Monad Maybe where
 	Nothing >>= _ = Nothing
 	(Just x) >>= f = f x
-\end{lstlisting}
+\end{minted}
 
 Analisar uma instância de \texttt{Monad} nos permite ver com mais clareza o que faz \texttt{(>>=)}, e porque ele costuma ser chamado de \emph{binding operator}.
 Para \texttt{Maybe}, \texttt{(>>=)} retorna \texttt{Nothing} tão logo seu primeiro argumento é \texttt{Nothing}, do contrário aplica seu conteúdo a \texttt{f}, produzindo a saída.
@@ -2835,10 +2828,10 @@ Dizemos que \texttt{(>>=)} permite o \emph{binding} de computações.
 
 Agora, vamos ilustrar como o tipo lista instancia a classe \texttt{Monad}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 instance Monad [] where
 	xs >>= f = concat $ f <$> xs
-\end{lstlisting}
+\end{minted}
 
 Podemos perceber que essa implementação de \texttt{(>>=)} evidencia a ``combinação'' de contextos, isto é, transforma uma lista de listas em uma lista simples.
 Primeiro, \texttt{f <\$> xs} tem tipo \texttt{[[b]]}, e depois esse aninhamento de contextos é resolvido com \texttt{concat}.
@@ -2847,10 +2840,10 @@ Para listas, portanto, \mbox{\texttt{join = concat}}.
 Para o exercício que segue, vamos precisar da função identidade.
 Sua definição é escrita em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 id :: a -> a
 id x = x
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Defina \emph{\texttt{join}} em termos de \emph{\texttt{(>>=)}} e \emph{\texttt{id}}.
@@ -2880,7 +2873,7 @@ Haskell poderia muito bem deixar mais explícita a pureza de suas funções se n
 No entanto, é esse artifício que permite uma representação para a impureza.
 Vamos falar da mônada \texttt{IO}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> :info IO
 newtype IO a
 	= GHC.Types.IO (GHC.Prim.State# GHC.Prim.RealWorld
@@ -2891,14 +2884,14 @@ instance Functor IO -- Defined in 'GHC.Base'
 instance Monad IO -- Defined in 'GHC.Base'
 instance Monoid a => Monoid (IO a) -- Defined in 'GHC.Base'
 instance Semigroup a => Semigroup (IO a) -- Defined in 'GHC.Base'
-\end{lstlisting}
+\end{minted}
 
 Não entre em pânico.
 Basicamente, isso significa que \texttt{IO a} encapsula uma função que, dado um estado do mundo real, retorna um (possivelmente novo) estado mundo real junto de um valor do tipo \texttt{a}.
 Dessa forma, não devemos esperar que, dada \texttt{f :: a -> IO b}, \texttt{f x} tenha sempre o mesmo valor, uma vez que o valor contido em \texttt{IO b} depende também do estado do mundo real.
 Inclusive, \texttt{IO b} não apenas depende, mas pode alterar o estado do mundo real.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> f _ = getLine
 Prelude> :t f
 f :: p -> IO String
@@ -2912,7 +2905,7 @@ Prelude> (==) <$> f 1 <*> f 1
 aaa
 bbb
 False
-\end{lstlisting}
+\end{minted}
 
 Perceba que não é verdade que \texttt{f 1} é sempre igual a \texttt{f 1}.
 O conteúdo da \texttt{IO} que \texttt{f} retorna pode mudar, mesmo que seja usado o mesmo argumento.
@@ -2939,13 +2932,13 @@ Assim, \texttt{IO} é uma espécie de mônada ``mágica'', e o encapsulamento qu
 Agora, vamos lidar com algumas funções que nos auxiliam no tratamento de mônadas.
 Primeiro, definimos \texttt{mapM} em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 mapM :: Monad m => (a -> m b) -> [a] -> m [b]
 mapM f [] = pure []
 mapM f (x:xs) = f x >>= \x' ->
                 mapM f xs >>= \xs' ->
                 pure  (x' : xs')
-\end{lstlisting}
+\end{minted}
 
 Nessa definição, fizemos uso de \emph{funções anônimas}.
 Essencialmente, podemos definir uma função sem dá-la um nome utilizando \texttt{\char`\\} seguido de seus argumentos, com \texttt{->} indicando a definição da função.
@@ -2973,21 +2966,21 @@ No entanto, como o primeiro argumento de \texttt{mapM} é uma função \texttt{a
 Vamos definir \texttt{mapM\char`_ \quad:: Monad m => (a -> m b) -> [a] -> m ()}, que ignora os resultados produzidos pela função monádica.
 A definição que segue deve ser escrita em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 mapM_ :: Monad m => (a -> m b) -> [a] -> m ()
 mapM_ f [] = pure ()
 mapM_ f (x:xs) = f x *> mapM_ f xs
-\end{lstlisting}
+\end{minted}
 
 Eis uma breve ilustração do uso de \texttt{mapM\char`_}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Functions> import Prelude (putStrLn)
 *Functions Prelude> mapM_ putStrLn ["aaa", "bbb", "ccc"]
 aaa
 bbb
 ccc
-\end{lstlisting}
+\end{minted}
 
 \begin{exercicio}
 	Implemente \emph{\texttt{sequenceA\char`_ \quad:: Applicative f => [f a] -> f ()}}, que é similar a \emph{\texttt{sequenceA}}, proposta no Exercício \ref{exercicio:sequenceA}, mas ignora os resultados das computações.
@@ -3007,7 +3000,7 @@ Vamos lidar com aspectos da linguagem que tem impacto direto no desempenho de no
 Como bem sabemos, Haskell é uma linguagem de programação com avaliação preguiçosa, isto é, as definições de valores são avaliadas apenas quando esses são necessários.
 Podemos verificar isso.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> x = 1 + 1 :: Int
 Prelude> :sprint x
 x = _
@@ -3015,7 +3008,7 @@ Prelude> x
 2
 Prelude> :sprint x
 x = 2
-\end{lstlisting}
+\end{minted}
 
 Aqui, observamos o uso de \texttt{:sprint}, um comando especial do \texttt{ghci} que não faz parte da linguagem Haskell.
 A função de \texttt{:sprint} é verificar o valor associado a um identificador, sem forçar sua avaliação: quando o identificador já foi avaliado, seu valor é exibido; caso contrário, exibe-se \texttt{\char`_}.
@@ -3023,7 +3016,7 @@ Percebemos, portanto, que \texttt{x} não foi avaliado assim que foi definido.
 Quando exibimos o valor de \texttt{x}, no entanto, ele precisa ser avaliado.
 Vamos tentar algo um pouco mais elaborado.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> x = 1 + 1 :: Int
 Prelude> y = x + 1 :: Int
 Prelude> :sprint x
@@ -3036,7 +3029,7 @@ Prelude> :sprint x
 x = 2
 Prelude> :sprint y
 y = 3
-\end{lstlisting}
+\end{minted}
 
 Claramente, \texttt{x} e \texttt{y} não foram avaliados assim que definidos.
 Vamos dizer que \texttt{x} e \texttt{y} estavam \emph{suspensos}.
@@ -3050,16 +3043,16 @@ Vale ressaltar que \texttt{seq} não pode ser definida em Haskell, já que é im
 Utilizando \texttt{seq}, podemos criar um operador que representa a avaliação estrita em Haskell.
 A definição que segue deve ser escrita em \texttt{Functions.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 ($!) :: (a -> b) -> a -> b
 f $! x = seq x (f x)
 
 infixl 0 $!
-\end{lstlisting}
+\end{minted}
 
 Vamos testar o nosso novo operador.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *Functions Prelude> import Prelude (Int, (+))
 *Functions Prelude> f _ = 0
 *Functions Prelude> x = 1 + 1 :: Int
@@ -3077,7 +3070,7 @@ x = _
 0
 *Functions Prelude> :sprint x
 x = 2
-\end{lstlisting}
+\end{minted}
 
 Vemos que \texttt{f} recebe um argumento, mas o ignora e apenas retorna \texttt{0}.
 Assim, \texttt{f x} é avaliada sem que \texttt{x} deixe de estar suspenso.
@@ -3102,11 +3095,11 @@ Isso implica que a cadeia de \emph{thunks} que \texttt{foldl} produziu na \emph{
 Precisamos consertar \texttt{foldl}.
 Escrevemos a seguinte definição em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 foldl' :: (b -> a -> b) -> b -> [a] -> b
 foldl' _ acc [] = acc
 foldl' f acc (x:xs) = foldl' f $! (f acc x) $ xs
-\end{lstlisting}
+\end{minted}
 
 Temos o uso de \texttt{(\$!)} para forçar a avaliação de \texttt{f acc x} junto com a chamada de \texttt{foldl'}.
 Isso faz com que \texttt{foldl'} não construa uma cadeia de \emph{thunks}, uma vez que as atualizações do acumulador são avaliadas imediatamente, já que \texttt{foldl'} é recursiva por cauda.
@@ -3115,7 +3108,7 @@ Preferimos sempre o uso de \texttt{foldl'} a \texttt{foldl}.
 Vamos lidar agora com tipos parametrizados.
 Tome o seguinte exemplo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> x = 1 + 1 :: Int
 Prelude> y = 2 + 2 :: Int
 Prelude> p = (x, y)
@@ -3127,14 +3120,14 @@ Prelude> fst p
 2
 Prelude> :sprint p
 p = (2,_)
-\end{lstlisting}
+\end{minted}
 
 Assim que definido, o par \texttt{p} fica suspenso.
 Ao utilizarmos \texttt{fst} (a assinatura deixa claro o que ela faz), a primeira componente de \texttt{p} é avaliada.
 Como não foi necessário avaliar a segunda componente, \texttt{p} é avaliado parcialmente.
 Tome este outro exemplo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 Prelude> x = 1 + 1 :: Int
 Prelude> p = (x, x)
 Prelude> :sprint p
@@ -3143,13 +3136,13 @@ Prelude> fst p
 2
 Prelude> :sprint p
 p = (2,2)
-\end{lstlisting}
+\end{minted}
 
 Observa-se que, para avaliar a primeira componente de \texttt{p}, é necessário avaliar \texttt{x}.
 No entanto, como as componentes de \texttt{p} são ambas referências para o \emph{thunk} de \texttt{x}, \texttt{p} acaba sendo avaliado por completo.
 Vamos brincar um pouco com listas.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *List> xs = map (+1) [1..10] :: [Int]
 *List> :sprint xs
 xs = _
@@ -3170,7 +3163,7 @@ xs = [_,_,_,_,_,_,_,_,_,_]
 65
 *List> :sprint xs
 xs = [2,3,4,5,6,7,8,9,10,11]
-\end{lstlisting}
+\end{minted}
 
 Nota-se que \texttt{xs}, como esperado, não é avaliada assim que definida.
 Logo após \texttt{f \$! xs}, \texttt{xs} é parcialmente avaliada.
@@ -3185,7 +3178,7 @@ Assim como \texttt{seq}, \texttt{par} é definida a baixo nível.
 A função \texttt{par} põe a avaliação de seu primeiro argumento para ocorrer paralelamente à avaliação de seu segundo, quando essa ocorrer.
 Vamos ilustrar seu uso.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *List> import Control.Parallel
 *List Control.Parallel> import Prelude (seq)
 *List Control.Parallel Prelude> sum' = foldl' (+) 0
@@ -3202,7 +3195,7 @@ Vamos ilustrar seu uso.
 *List Control.Parallel Prelude> par x y
 50000005000000
 (4.28 secs, 4,320,073,040 bytes)
-\end{lstlisting}
+\end{minted}
 
 No exemplo acima, \texttt{seq x y} força a avaliação de \texttt{x} assim que a de \texttt{y} é forçada.
 Como \texttt{y} é o retorno de \mbox{\texttt{seq x y}}, e esse é exibido no terminal, a avaliação de \texttt{x} precisa também ser feita, já que a de \texttt{y} é forçada.
@@ -3213,7 +3206,7 @@ Isso não é toda a explicação da redução de tempo apresentada.
 No entanto, o \texttt{ghc} é esperto o bastante para distribuir o trabalho em paralelo de forma equilibrada entre os \emph{cores}.
 Usamos o comando \texttt{lscpu} para saber as características de nosso processador.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ lscpu
 Arquitetura:                x86_64
 Modo(s) operacional da CPU: 32-bit, 64-bit
@@ -3225,7 +3218,7 @@ Thread(s) per nucleo:       2
 Nucleo(s) por soquete:      2
 Soquete(s):                 1
 ...
-\end{lstlisting}
+\end{minted}
 
 Vamos entender a parte que nos importa da saída de \texttt{lscpu}:
 o sistema operacional ``enxerga'' quatro CPU's;
@@ -3271,11 +3264,11 @@ Isso faria quase nenhum trabalho ser feito em paralelo.
 Para remediar essa situação, vamos criar uma função que força a avaliação completa de uma lista.
 A definição a seguir deve ficar em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 force :: [a] -> [a]
 force [] = []
 force l@(x:xs) = seq x (seq (force xs) l)
-\end{lstlisting}
+\end{minted}
 
 Vamos entender o que \texttt{force} está fazendo.
 A chamada mais externa de \texttt{seq} garante que seu primeiro argumento (a cabeça de \texttt{l}) vai ser avaliada quando seu segundo argumento for avaliado.
@@ -3284,7 +3277,7 @@ Isso quer dizer que, quando \texttt{l} for avaliada, serão avaliadas tanto sua 
 Vale ressaltar que \texttt{force} não cria novas listas, uma vez que sempre retorna a mesma referência que recebe.
 Testamos o comportamento de \texttt{force}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 *List> xs = map (+1) [1..10] :: [Int]
 *List> head xs
 2
@@ -3298,18 +3291,18 @@ xs = 2 : _
 ys = [2,3,4,5,6,7,8,9,10,11]
 *List> :sprint xs
 xs = [2,3,4,5,6,7,8,9,10,11]
-\end{lstlisting}
+\end{minted}
 
 Com \texttt{force} em mãos, estamos aptos a processar listas em paralelo, com a certeza de que essas serão avaliadas por completo.
 Com a próxima ferramenta, poderemos ``quebrar'' uma lista em ``pedaços'' iguais.
 Essa definição deve ficar em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 chunks :: Int -> [a] -> [[a]]
 chunks _ [] = []
 chunks k xs = ps : chunks k qs where
     (ps, qs) = splitAt k xs
-\end{lstlisting}
+\end{minted}
 
 A essa altura, a definição de \texttt{chunks} não deve ser difícil de entender.
 Está claro que \mbox{\texttt{chunks k xs}} retorna \texttt{xs} dividida em partes, todas (talvez não a última) com \texttt{k} elementos.
@@ -3321,12 +3314,12 @@ Claramente, \texttt{xs == ys}, mas \texttt{ys} oferece uma oportunidade evidente
 Poderíamos fazer com que a avaliação de cada um dos ``pedaços'' de \texttt{xs} ocorresse em paralelo.
 A definição que segue deve ser escrita em \texttt{List.hs}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 parChunks :: Int -> [a] -> [[a]]
 parChunks k = parallel . chunks k where
     parallel [] = []
     parallel l@(xs:xss) = par (force xs) (pseq (parallel xss) l)
-\end{lstlisting}
+\end{minted}
 
 Vamos explicar o que \texttt{parChunks} está fazendo.
 Primeiro, \texttt{chunks} ``quebra'' a lista em diversas partes, e em seguida \texttt{parallel} força a avaliação de cada uma delas em paralelo: a chamada de \texttt{par} faz com que a avaliação de \mbox{\texttt{force xs}} ocorra paralelamente à avaliação de \texttt{pseq (parallel xss) l}, e essa garante que a avaliação de \texttt{parallel xss} (que vai forçar os demais ``pedaços'' em paralelo) vai ser feita antes da avaliação de \texttt{l}.
@@ -3336,7 +3329,7 @@ Esse \texttt{10} que utilizamos é apenas ilustrativo.
 É preciso fazer testes com diversos valores para esse parâmetro, e assim descobrir qual valor traz o maior ganho de tempo.
 Vamos aplicar essa ideia em um exemplo bem artificial.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Int, (+), (^), IO, print)
@@ -3354,27 +3347,27 @@ ys = concat (parChunks 1 xs)
 
 main :: IO ()
 main = print ys
-\end{lstlisting}
+\end{minted}
 
 Como \texttt{xs} tem quatro elementos, \texttt{parChunks 1 xs} cria quatro trabalhos paralelos para avaliar \texttt{xs}.
 Criamos um arquivo \texttt{Test.hs} com essas definições.
 Vamos compilar esse arquivo com o seguinte comando.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ ghc -O2 -threaded Test -W
-\end{lstlisting}
+\end{minted}
 
 Esse comando faz o compilador gerar código muito otimizado (\texttt{-O2}), e acoplar um \emph{runtime system} (\texttt{-threaded}), que gerencia os trabalhos feitos em paralelo.
 Agora, realizamos alguns testes com o executável criado.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ time ./Test +RTS -N1
 [500000000500000000,500000000499999999,500000000499999997,500000000499999994]
 
 real	0m39,523s
 user	0m38,978s
 sys	0m0,530s
-\end{lstlisting}
+\end{minted}
 
 Primeiro, \texttt{time} mede o tempo de execução do comando que vem em seguida.
 O tempo \texttt{real} é o tempo real de execução do programa, enquanto \texttt{user} e \texttt{sys} indicam, respectivamente, quanto tempo o processo gastou rodando código de usuário e código do \emph{kernel}.
@@ -3384,14 +3377,14 @@ O único parâmetro que vem depois de \texttt{+RTS} é \texttt{-N1}, que instrui
 Assim, mesmo fazendo uso de paralelismo, \texttt{-N1} não nos permite ter ganhos, pois mesmo as avaliações paralelizadas são realizadas todas pela mesma \emph{thread}, e portanto não ocorrem de forma simultânea.
 Vamos tentar \texttt{-N2}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ time ./Teste +RTS -N2
 [500000000500000000,500000000499999999,500000000499999997,500000000499999994]
 
 real	0m33,065s
 user	0m44,820s
 sys	0m1,494s
-\end{lstlisting}
+\end{minted}
 
 A primeira coisa que notamos é uma redução de tempo bem pequena, de $39,523$ para $33,065$ segundos, resultando em um \emph{speedup} de quase $1,2$.
 O \emph{speedup} aqui obtido passou longe de $2$, e para o nosso processador, esse deve ser o limite teórico de \emph{speedup}.
@@ -3406,26 +3399,26 @@ Vamos fazer uma modificação em \texttt{Test.hs}.
 Substituimos a expressão \texttt{parChunks 1 xs} por \texttt{parChunks 2 xs}, fazendo \texttt{xs} ser avaliada, dessa vez, por dois trabalhos paralelos.
 Recompilamos \texttt{Test.hs} e voltamos aos testes.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 $ time ./Teste +RTS -N1
 [500000000500000000,500000000499999999,500000000499999997,500000000499999994]
 
 real	0m39,544s
 user	0m39,056s
 sys	0m0,470s
-\end{lstlisting}
+\end{minted}
 
 Esse novo teste nos tomou quase o mesmo tempo de execução que o primeiro teste.
 Vamos testar com \texttt{-N2}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
  time ./Teste +RTS -N2
 [500000000500000000,500000000499999999,500000000499999997,500000000499999994]
 
 real	0m21,273s
 user	0m41,760s
 sys	0m0,646s
-\end{lstlisting}
+\end{minted}
 
 Agora sim!
 A redução de tempo foi de 39,544 para 21,273 segundos, o que nos dá um \emph{speedup} um pouco maior que $1,85$.
@@ -3455,12 +3448,12 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab1.hs}.
 Seu conteúdo inicial deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Lab1 where
 
 import Prelude (Eq, (+), (*), Int)
 import List(foldl, foldr)
-\end{lstlisting}
+\end{minted}
 
 \begin{enumerate}
 	\item
@@ -3479,7 +3472,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab2.hs}.
 Seu conteúdo inicial deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Lab2 where
 
 import Prelude(Eq, Fractional, (/))
@@ -3488,7 +3481,7 @@ import Bool
 import Functions
 import List
 import Maybe
-\end{lstlisting}
+\end{minted}
 
 \begin{enumerate}
 	\item
@@ -3513,7 +3506,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab3.hs}.
 Seu conteúdo inicial deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Lab3 where
 
 import Prelude (Ord, (<=), Eq, (==), Bool(True, False))
@@ -3521,7 +3514,7 @@ import Prelude (Ord, (<=), Eq, (==), Bool(True, False))
 import Bool
 import Functions
 import List
-\end{lstlisting}
+\end{minted}
 
 \begin{enumerate}
 	\item
@@ -3549,7 +3542,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab4.hs}.
 Seu conteúdo inicial deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Eq, (==), (/=),
@@ -3562,7 +3555,7 @@ import Functions
 import List
 
 import qualified BSTree as BST
-\end{lstlisting}
+\end{minted}
 
 Para esse laboratório, vamos utilizar o arquivo auxiliar \texttt{heyjude.txt}, que contém a letra da referida música.
 Como você deve ter notado, o arquivo \texttt{Lab4.hs} contém um módulo chamado \texttt{Main}.
@@ -3589,24 +3582,24 @@ As atividades a seguir devem ser um guia para o desenvolvimento de um programa q
 		Vamos desenvolver a função \texttt{process :: [Char] -> [Char]}, que junta todas as partes do nosso programa.
 		Essencialmente, \texttt{process} vai limpar a string de entrada, removendo caracteres indesejáveis, contar a ocorrência das palavras e em seguida preparar a saída do programa, que é seu retorno.
 		Podemos decompor \texttt{process} nessas três partes.
-		\begin{lstlisting}[language=haskell, frame=single]
+		\begin{minted}[bgcolor=bg]{haskell}
 process :: [Char] -> [Char]
 process = makeOutput . countWords . clean where
 	clean = undefined
 	countWords = undefined
 	makeOutput = concat . intercalate "\n" . map f . BST.inOrder
 	f (str, c) = str ++ ": " ++ show c
-		\end{lstlisting}
+		\end{minted}
 		Escreva implementações para \texttt{clean} e \texttt{countWords}.
 		A função \texttt{clean} deve remover os caracteres \texttt{','}, \texttt{'('}, \texttt{')'}, \texttt{'?'} e \texttt{'!'}, e isso pode ser feito com uma composição de \texttt{remove}s.
 		A função \texttt{countWords} deve construir a árvore com a contagem de ocorrência das palavras, e isso pode ser expresso como uma composição das funções \texttt{lines}, \texttt{words}, \texttt{map}, \texttt{concat} e \texttt{count}.
 	\item
 		Com todas as funções desenvolvidas, estamos aptos a finalizar nosso programa.
 		Nossa \texttt{main} (que não pode ser totalmente explicada agora) é apresentada a seguir.
-		\begin{lstlisting}[language=haskell, frame=single]
+		\begin{minted}[bgcolor=bg]{haskell}
 main :: IO ()
 main = readFile "heyjude.txt" >>= pure . process >>= putStrLn
-		\end{lstlisting}
+		\end{minted}
 		Agora, basta compilar \texttt{Lab4.hs} e conferir a saída do executável.
 \end{enumerate}
 
@@ -3618,7 +3611,7 @@ Seu conteúdo inicial deve ser o seguinte.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Eq, (==), (/=),
@@ -3631,7 +3624,7 @@ import Functions
 import List
 
 import qualified BSTree as BST
-\end{lstlisting}
+\end{minted}
 
 Vamos criar um programa ligeiramente diferente do criado na Subseção \ref{lab4}.
 Em vez de imprimir as palavras em ordem alfabética, vamos imprimí-las em ordem decrescente de frequência, isto é, as palavras com maior número de ocorrências serão impressas primeiro.
@@ -3651,7 +3644,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab6.hs}.
 Seu conteúdo inicial deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Char, Bool(False), pure, (>>=),
@@ -3663,7 +3656,7 @@ import List
 import Maybe
 
 import qualified Graph as G
-\end{lstlisting}
+\end{minted}
 
 Vamos trabalhar com grafos.
 Em particular, vamos desenvolver um programa que resolve o Problema da Celebridade, um clássico das maratonas de programação.
@@ -3674,10 +3667,10 @@ Aqui, estamos usando ``$u$ conhece $v$'' para indicar a existência da aresta $(
 
 Para começar, nossa \texttt{main} será como nos outros laboratórios.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 main :: IO ()
 main = readFile "g1.txt" >>= pure . process >>= putStrLn
-\end{lstlisting}
+\end{minted}
 
 No entanto, o arquivo \texttt{g1.txt} contém a codificação de um grafo, em vez de um conteúdo arbitrário.
 Sua primeira linha contém um inteiro, indicando o número de vértices.
@@ -3685,14 +3678,14 @@ As demais linhas contêm exatamente dois inteiros, indicando as extremidades das
 
 Nossa função \texttt{process} tem quatro etapas: dividir o conteúdo do arquivo por linhas, construir o grafo correspondente, resolver o Problema da Celebridade e produzir a saída.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 process :: [Char] -> [Char]
 process = makeOutput . hasCelebrity . buildGraph . lines
-\end{lstlisting}
+\end{minted}
 
 Para que possamos nos concentrar no problema em si, eis a definição de \texttt{buildGraph}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 buildGraph :: [[Char]] -> G.Graph
 buildGraph [] = G.empty
 buildGraph (n:es) = foldr f gn es' where
@@ -3700,7 +3693,7 @@ buildGraph (n:es) = foldr f gn es' where
 	gn = G.edgeless (read n)
 	f e g = G.addEdge g u v where
 		(u:v:_) = map read e
-\end{lstlisting}
+\end{minted}
 
 Note que, nesse contexto, \texttt{read} consegue inferir o tipo de seu retorno.
 Isso é possível por conta das assinaturas das funções que estão em \texttt{Graph.hs}.
@@ -3709,12 +3702,12 @@ Em um primeiro momento, podemos supor que \texttt{makeOutput = show}. Assim, o r
 Obviamente, é mais útil dizer qual é a celebridade, caso haja alguma.
 No entanto, esse improviso nos deixa apenas com \texttt{hasCelebrity} indefinida.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 hasCelebrity :: G.Graph -> Bool
 hasCelebrity g = verify candidate where
 	verify = undefined
 	candidate = undefined
-\end{lstlisting}
+\end{minted}
 
 Vamos utilizar uma solução bem simples para o problema.
 Como um grafo tem no máximo uma celebridade, em um primeiro momento queremos encontrar um vértice candidato a celebridade.
@@ -3729,12 +3722,12 @@ Precisamos retornar o candidato dentro de um \texttt{Maybe}, para podermos trata
 
 Uma vez determinado o candidato, caso haja algum, a função \texttt{verify} testa as condições de celebridade para ele.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 verify = maybe False f where
 	f c = and [cond1, not cond2] where
 	cond1 = undefined
 	cond2 = undefined
-\end{lstlisting}
+\end{minted}
 
 Nessa definição, \texttt{maybe} nos poupa de tratar explicitamente os casos de \texttt{Maybe}.
 O valor \texttt{cond1} indica se todos os outros vértices ``conhecem'' o candidato, enquanto \texttt{cond2} indica se o candidato ``conhece'' algum outro vértice.
@@ -3808,7 +3801,7 @@ O conteúdo inicial de \texttt{Lab8.hs} deve ser o seguinte.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (IO, print, putStrLn,
@@ -3820,31 +3813,31 @@ import System.Environment (getArgs)
 
 import Functions
 import List
-\end{lstlisting}
+\end{minted}
 
 Nesse laboratório, vamos exercitar uma interação básica com o sistema operacional, que consiste em tratar argumentos da linha de comando.
 Vamos desenvolver uma série de programas elementares, começando com \texttt{program1}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 program1 :: IO ()
 program1 = getArgs >>= print
-\end{lstlisting}
+\end{minted}
 
 Basicamente, \texttt{program1} toma a lista de argumentos e a imprime no terminal.
 Para compilar, acrescentamos.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 main = program1
-\end{lstlisting}
+\end{minted}
 
 Não escrevemos a assinatura explícita de \texttt{main}, pois ela tem claramente a mesma assinatura de \texttt{program1}.
 Tente passar argumentos para o executável \texttt{Lab8}.
 Agora, vamos desenvolver um análogo do comando \texttt{cat}, que imprime o conteúdo de um arquivo de texto no terminal.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 program2 :: IO ()
 program2 = getArgs >>= readFile . head >>= putStrLn
-\end{lstlisting}
+\end{minted}
 
 Com o uso de \texttt{head}, é bem simples tratar um único argumento passado pela linha de comando.
 Faça a alteração devida em \texttt{main} e teste o novo programa.
@@ -3858,12 +3851,12 @@ Organizá-las por composição pode ser uma boa ideia.
 
 Agora, vamos criar um programa que copia o conteúdo de um arquivo de texto.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 program4 :: IO ()
 program4 = getArgs >>= treatArgs where
 	treatArgs [from, to] = readFile from >>= writeFile to
 	treatArgs _ = putStrLn "You must pass exactly two arguments."
-\end{lstlisting}
+\end{minted}
 
 Verifique a assinatura de \texttt{writeFile} no \texttt{ghci}, afinal é a primeira vez que a vemos.
 A função \texttt{treatArgs} trata os argumentos usando dois casos:
@@ -3898,7 +3891,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab9.hs}.
 O conteúdo inicial de \texttt{Lab9.hs} deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (IO, putStrLn, getLine,
@@ -3909,7 +3902,7 @@ import Prelude (IO, putStrLn, getLine,
 import Bool
 import Functions
 import List
-\end{lstlisting}
+\end{minted}
 
 Vamos desenvolver um programa que ``cadastra'' uma senha.
 Por motivos de verificação, o programa pede que ela seja digitada duas vezes e, enquanto houver divergência, pede novamente.
@@ -3930,14 +3923,14 @@ Sua implementação é dada a seguir.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 validPasswd :: IO [Char]
 validPasswd = getPasswd >>= f where
     f (p1, p2) = cond (p1 == p2)
                       (pure p1)
                       (incorrect *> validPasswd)
     incorrect = putStrLn "They don't match! Try again."
-\end{lstlisting}
+\end{minted}
 
 Agora que sabemos como obter uma senha válida, implemente \texttt{main :: IO ()} e teste seu programa.
 Mas o laboratório ainda não acabou.
@@ -3958,7 +3951,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab10.hs}.
 O conteúdo inicial de \texttt{Lab10.hs} deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Ord, (<=), (>=), (-), Bool,
@@ -3968,7 +3961,7 @@ import Bool
 import Functions
 import List
 import Maybe
-\end{lstlisting}
+\end{minted}
 
 Neste laboratório, vamos resolver o problema da maior subsequência crescente, ou \emph{longest increasing subsequence}.
 Dada uma sequência de naturais, gostaríamos de encontrar a maior subsequência crescente dessa sequência.
@@ -3992,7 +3985,7 @@ Essa solução pode ser implementada da seguinte forma.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 lis :: Ord a => [a] -> [a]
 lis [] = []
 lis [x] = [x]
@@ -4006,7 +3999,7 @@ lis xs = fromMaybe [] (maximalBy cmp (s <$> [0..n - 1] <*> pure xs)) where
 		k = length ys
 		ms = fromMaybe [] $ maximalBy cmp candidates
 	s i ys = s 0 $ drop i ys
-\end{lstlisting}
+\end{minted}
 
 Em um primeiro momento, a função \texttt{s} parece receber mais argumentos que o necessário, afinal $s$ é indexada apenas por $0 \leq i \leq n - 1$.
 No entanto, receber a lista como segundo argumento nos permite tratar o caso referente a $s_i$, para algum $0 < i \leq n - 1$, com \texttt{drop}.
@@ -4027,7 +4020,7 @@ Desenvolva as atividades a seguir.
 Salve suas funções em um arquivo \texttt{Lab11.hs}.
 O conteúdo inicial de \texttt{Lab11.hs} deve ser o seguinte.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Char, Int, (==),
@@ -4036,18 +4029,18 @@ import Prelude (Char, Int, (==),
 import Bool
 import Functions
 import List
-\end{lstlisting}
+\end{minted}
 
 Neste laboratório, vamos construir definições para trabalhar com autômatos finitos
 não-determinísticos.
 Para isso, vamos usar o seguinte tipo.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 type State = Int
 type Transition = (State, Char, State)
 
 data NFA = NFA [State] State [Transition] [State]
-\end{lstlisting}
+\end{minted}
 
 Em \texttt{NFA}, o primeiro campo representa o conjunto de estados do autômato,
 enquanto o segundo representa seu estado corrente.
@@ -4059,7 +4052,7 @@ Além disso, definimos uma série de funções auxiliares para esse tipo.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 nfa :: [State] -> State -> [Transition] -> [State] -> NFA
 nfa states s trs finals = NFA states s trs finals
 
@@ -4074,7 +4067,7 @@ transitions (NFA _ _ trs _) = trs
 
 finalStates :: NFA -> [State]
 finalStates (NFA _ _ _ finals) = finals
-\end{lstlisting}
+\end{minted}
 
 Com elas, podemos definir uma função que faz o autômato ``consumir'' um
 caractere.
@@ -4082,7 +4075,7 @@ Em nossa representação desse conceito, o autômato não vai mudar de estado, e
 produzir novos autômatos, cada um deles representando o resultado de uma
 possível transição.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 transition :: NFA -> Char -> [NFA]
 transition aut c = f <$> nextStates where
   validTransitions = filter valid (transitions aut)
@@ -4090,7 +4083,7 @@ transition aut c = f <$> nextStates where
   nextStates = thd <$> validTransitions
   thd (_, _, z) = z
   f st = nfa (states aut) st (transitions aut) (finalStates aut)
-\end{lstlisting}
+\end{minted}
 
 Para prosseguir com as atividades do laboratório, faça a implementação de duas
 funções: \mbox{\texttt{isAccepting :: NFA -> Bool}} e \texttt{run :: NFA -> [Char] -> Bool}.
@@ -4117,7 +4110,7 @@ O conteúdo inicial de \texttt{Lab12.hs} deve ser o seguinte.
 
 \pagebreak
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 module Main where
 
 import Prelude (Int, (+), (^),
@@ -4138,7 +4131,7 @@ main = getArgs >>= \[kstr] ->
 
 xs :: Int -> [Int]
 xs k = zipWith (+) [1..10^k] [1..10^k]
-\end{lstlisting}
+\end{minted}
 
 Além do código que deve ser desenvolvido, é esperada a entrega de uma planilha
 contendo os tempos de execução do programa, de acordo com dois parâmetros:
@@ -4208,12 +4201,12 @@ Caso contrário, \texttt{until} testa, recursivamente, o predicado \texttt{p} pa
 Agora, vamos implementar a raiz quadrada.
 Você pode usar o seguinte template.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 sqrt :: Floating a => a -> a
 sqrt x = until goodEnough improve x where
 	goodEnough y = undefined
 	improve y = undefined
-\end{lstlisting}
+\end{minted}
 
 Para implementar \texttt{goodEnough}, determine se o valor absoluto de \texttt{y*y} está suficientemente próximo de \texttt{x}.
 Sugerimos uma precisão de seis casas decimais.
@@ -4228,9 +4221,9 @@ Isso é suficiente para determinar que os números naturais formam um conjunto i
 
 Com base nessa definição, podemos implementar os naturais da seguinte forma.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 data Nat = Zero | Suc Nat
-\end{lstlisting}
+\end{minted}
 
 Faça de \texttt{Nat} uma instância da classe \texttt{Eq} (basta implementar \texttt{(==)}).
 Faça de \texttt{Nat} uma instância da classe \texttt{Ord} (basta implementar \texttt{(<=)}).
@@ -4260,10 +4253,10 @@ Utilizando funções já escritas em laboratório, sabemos construir uma \texttt
 
 Vamos criar o seguinte tipo, que representa uma \emph{codificação de Huffman}.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 data HuffmanTree a = Leaf a
                    | Branch (HuffmanTree a) (HuffmanTree a)
-\end{lstlisting}
+\end{minted}
 
 Vamos usar esse tipo para representar as palavras de um arquivo de texto como suas folhas.
 Cada folha tem sua codificação representada pelo seu caminho a partir da raiz da árvore:
@@ -4322,17 +4315,17 @@ nesse contexto sejam compilados com o seguinte comando.
 Nele, \texttt{Program.hs}
 representa o nome do arquivo desenvolvido.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 ghc -O2 -threaded Program.hs
-\end{lstlisting}
+\end{minted}
 
 Esperamos também que os testes sejam feitos com o seguinte comando. Nele,
 \texttt{k} representa o número de \emph{threads} a serem utilizadas pelo programa.
 Lembramos que \texttt{real} é o tempo que deve ser considerado.
 
-\begin{lstlisting}[language=haskell, frame=single]
+\begin{minted}[bgcolor=bg]{haskell}
 time ./Program +RTS -Nk
-\end{lstlisting}
+\end{minted}
 
 Sugerimos que, para obtenção de bons resultados, os testes concorram com
 o menor número possível de outros programas.
