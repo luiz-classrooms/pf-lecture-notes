@@ -217,6 +217,62 @@
 <h1 class="title">Programação Funcional</h1>
 <p class="author">Luiz Alberto do Carmo Viana</p>
 </header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#introdução">Introdução</a></li>
+<li><a href="#ferramentas">Ferramentas</a></li>
+<li><a href="#programando-em-haskell">Programando em Haskell</a>
+<ul>
+<li><a href="#trabalhando-com-listas">Trabalhando com listas</a></li>
+<li><a href="#abstraindo-o-conceito-de-loop">Abstraindo o conceito de <em>loop</em></a></li>
+<li><a href="#usando-tipos-para-o-tratamento-de-erros">Usando tipos para o tratamento de erros</a></li>
+<li><a href="#representando-valores-disjuntivos">Representando valores disjuntivos</a></li>
+<li><a href="#árvores-binárias-de-busca">Árvores binárias de busca</a></li>
+<li><a href="#representando-sequências-de-forma-eficiente">Representando sequências de forma eficiente</a></li>
+<li><a href="#subsec:compiling">Compilando um programa</a></li>
+<li><a href="#implementando-um-grafo">Implementando um grafo</a></li>
+<li><a href="#filas-de-prioridade">Filas de prioridade</a></li>
+<li><a href="#classes">Classes</a></li>
+<li><a href="#functor-applicative-e-alternative"><code>Functor</code>, <code>Applicative</code> e <code>Alternative</code></a></li>
+<li><a href="#fix-e-programação-dinâmica"><code>fix</code> e Programação Dinâmica</a></li>
+<li><a href="#mônadas">Mônadas</a></li>
+<li><a href="#avaliação-estrita-e-paralelismo">Avaliação estrita e Paralelismo</a></li>
+</ul></li>
+<li><a href="#laboratórios">Laboratórios</a>
+<ul>
+<li><a href="#laboratório-1">Laboratório 1</a></li>
+<li><a href="#lab2">Laboratório 2</a></li>
+<li><a href="#lab3">Laboratório 3</a></li>
+<li><a href="#lab4">Laboratório 4</a></li>
+<li><a href="#laboratório-5">Laboratório 5</a></li>
+<li><a href="#laboratório-6">Laboratório 6</a></li>
+<li><a href="#laboratório-7">Laboratório 7</a></li>
+<li><a href="#laboratório-8">Laboratório 8</a></li>
+<li><a href="#laboratório-9">Laboratório 9</a></li>
+<li><a href="#laboratório-10">Laboratório 10</a></li>
+<li><a href="#laboratório-11">Laboratório 11</a></li>
+<li><a href="#laboratório-12">Laboratório 12</a></li>
+</ul></li>
+<li><a href="#trabalhos-práticos">Trabalhos práticos</a>
+<ul>
+<li><a href="#trabalho-1">Trabalho 1</a>
+<ul>
+<li><a href="#problema-1">Problema 1</a></li>
+<li><a href="#problema-2">Problema 2</a></li>
+<li><a href="#problema-3">Problema 3</a></li>
+</ul></li>
+<li><a href="#trabalho-2">Trabalho 2</a></li>
+<li><a href="#trabalho-3">Trabalho 3</a>
+<ul>
+<li><a href="#tema-1">Tema 1</a></li>
+<li><a href="#tema-2">Tema 2</a></li>
+<li><a href="#tema-3">Tema 3</a></li>
+<li><a href="#tema-4">Tema 4</a></li>
+<li><a href="#tema-5">Tema 5</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
 <h1 id="introdução">Introdução</h1>
 <p>Programar computadores é uma atividade que pode ser bastante prazeroza. Testar programas de computador, a fim de garantir que funcionem adequadamente, já não é tão agradável (ao menos para mim).</p>
 <p>A crescente complexidade dos ambientes computacionais traz consigo linguagens de programação cada vez mais sofisticadas, dotadas de recursos necessários para lidar com os avanços técnicos dos computadores. Atualmente, por exemplo, é bastante comum nos depararmos com computadores dotados de múltiplos processadores ou <em>cores</em>. Para tirar proveito desse recurso, é preciso escrever programas que executem instruções em paralelo, com o auxílio de linguagens que forneçam os meios para lidar com os vários <em>cores</em> do processador.</p>
