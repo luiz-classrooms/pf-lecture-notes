@@ -1,1 +1,0 @@
-[![](capa.png)](https://github.com/senapk/pf-lecture-notes/blob/master/notas.pdf)
