@@ -7,3 +7,5 @@
 *.pyg
 /notas.synctex.gz
 *.toc
+_minted-notas
+.vscode
